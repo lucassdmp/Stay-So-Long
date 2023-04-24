@@ -247,6 +247,10 @@ CMakeFiles/Stay-So-Long.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/SFML/Window/Window.hpp \
   /usr/include/SFML/Window/WindowHandle.hpp \
   /usr/include/SFML/Window/WindowStyle.hpp \
+  /usr/include/SFML/OpenGL.hpp \
+  /usr/include/GL/gl.h \
+  /usr/include/GL/glext.h \
+  /usr/include/KHR/khrplatform.h \
   /usr/include/c++/11/iostream \
   /usr/include/c++/11/istream \
   /usr/include/c++/11/bits/istream.tcc
@@ -255,6 +259,8 @@ CMakeFiles/Stay-So-Long.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/c++/11/bits/istream.tcc:
 
 /usr/include/c++/11/istream:
+
+/usr/include/SFML/OpenGL.hpp:
 
 /usr/include/c++/11/bits/vector.tcc:
 
@@ -289,6 +295,8 @@ CMakeFiles/Stay-So-Long.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/c++/11/array:
 
 /usr/include/c++/11/bits/locale_conv.h:
+
+/usr/include/KHR/khrplatform.h:
 
 /usr/include/SFML/Window/Joystick.hpp:
 
@@ -464,6 +472,8 @@ CMakeFiles/Stay-So-Long.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/c++/11/ext/type_traits.h:
 
+/usr/include/GL/gl.h:
+
 /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h:
 
 /usr/include/x86_64-linux-gnu/bits/libc-header-start.h:
@@ -607,6 +617,8 @@ CMakeFiles/Stay-So-Long.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/c++/11/cstdlib:
 
 /usr/include/c++/11/bits/stl_iterator_base_types.h:
+
+/usr/include/GL/glext.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h:
 
