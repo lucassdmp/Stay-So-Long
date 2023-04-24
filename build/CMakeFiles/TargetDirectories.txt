@@ -1,0 +1,3 @@
+/home/lucas/Desktop/Stay-So-Long/build/CMakeFiles/Stay-So-Long.dir
+/home/lucas/Desktop/Stay-So-Long/build/CMakeFiles/edit_cache.dir
+/home/lucas/Desktop/Stay-So-Long/build/CMakeFiles/rebuild_cache.dir
