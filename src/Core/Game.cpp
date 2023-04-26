@@ -1,6 +1,6 @@
 #include <GL/gl.h>
-#include "Game.h"
-#include "../Util/Shapes.h"
+#include "Game.hpp"
+#include "../Util/Shapes.hpp"
 
 #define SCREEN_WIDTH 1000
 #define SCREEN_HEIGHT 720
@@ -44,7 +44,7 @@ void Game::Update()
 {
   while(this->window->pollEvent(*this->event))
   {
-    this->handleInput();
+    this->HandleInput();
   }
 
   *this->deltaTime = this->clock->restart();
@@ -66,7 +66,7 @@ void Game::Render()
   this->window->display();
 }
 
-void Game::handleInput()
+void Game::HandleInput()
 {
   if(this->event->type == sf::Event::Closed)
     this->window->close();
