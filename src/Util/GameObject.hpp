@@ -5,11 +5,12 @@
 
 
 class GameObject{
-    private:
+    protected:
         glm::vec2 pos;
         glm::vec2 size;
         sf::Color color;
     public:
+        GameObject();
         GameObject(glm::vec2 pos, glm::vec2 size, sf::Color color);
         glm::vec2 getPos();
         glm::vec2 getSize();
@@ -17,5 +18,5 @@ class GameObject{
         void setPos(glm::vec2 pos);
         void setSize(glm::vec2 size);
         void setColor(sf::Color color); 
-        void move(glm::vec2);
+        void move(glm::vec2 mov);
 };
