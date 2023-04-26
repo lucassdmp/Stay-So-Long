@@ -18,5 +18,5 @@ public:
   void Run();
   void Update();
   void Render();
-  void HandleInput();
+  void handleInput();
 };
