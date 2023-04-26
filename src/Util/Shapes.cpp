@@ -1,6 +1,6 @@
 #include <GL/gl.h>
 #include <cmath>
-#include "Shapes.h"
+#include "Shapes.hpp"
 
 void Shapes::Square()
 {
