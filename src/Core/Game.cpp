@@ -44,7 +44,7 @@ void Game::Update()
 {
   while(this->window->pollEvent(*this->event))
   {
-    this->HandleInput();
+    this->handleInput();
   }
 
   *this->deltaTime = this->clock->restart();
@@ -66,7 +66,7 @@ void Game::Render()
   this->window->display();
 }
 
-void Game::HandleInput()
+void Game::handleInput()
 {
   if(this->event->type == sf::Event::Closed)
     this->window->close();
