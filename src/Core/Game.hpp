@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "../Entities/Player.hpp"
 
 class Game
 {
@@ -10,6 +11,7 @@ private:
   sf::Clock* clock;
   sf::Time* time;
   sf::Time* deltaTime;
+  Player player;
 
 public:
   Game();
