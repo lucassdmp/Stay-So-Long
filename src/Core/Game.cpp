@@ -56,10 +56,8 @@ void Game::Render()
 
   glPushMatrix();
 
-  glTranslatef(200, 200, 1);
-  glScalef(100, 100, 1);
-
-  Shapes::Circle();
+  glTranslatef(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0);
+  Shapes::Circle(1, 36);
 
   glPopMatrix();
 
