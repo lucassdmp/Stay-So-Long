@@ -1,21 +1,23 @@
 #include <GL/gl.h>
 #include "Game.h"
+#include "../Util/Shapes.h"
 
 #define SCREEN_WIDTH 1000
 #define SCREEN_HEIGHT 720
 
 Game::Game()
 {
-  this->window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stay So Long", sf::Style::Fullscreen);
+  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+  this->window = new sf::RenderWindow(sf::VideoMode(desktop.width, desktop.height), "Stay So Long", sf::Style::Fullscreen);
   this->event = new sf::Event();
   this->clock = new sf::Clock();
   this->time = new sf::Time();
   this->deltaTime = new sf::Time();
 
-  glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  glViewport(0, 0, desktop.width, desktop.height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0.0f, SCREEN_WIDTH, 0.0f, SCREEN_HEIGHT, 0.0f, 1.0f);
+  glOrtho(0, desktop.width, 0, desktop.height, -1, 1);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
@@ -52,12 +54,14 @@ void Game::Render()
 {
   this->window->clear(sf::Color::Black);
 
-  glBegin(GL_QUADS);
-    glVertex2f(-200, -200);
-    glVertex2f(200, -200);
-    glVertex2f(200, 200);
-    glVertex2f(-200, 200);
-  glEnd();
+  glPushMatrix();
+
+  glTranslatef(200, 200, 1);
+  glScalef(100, 100, 1);
+
+  Shapes::Circle();
+
+  glPopMatrix();
 
   this->window->display();
 }
