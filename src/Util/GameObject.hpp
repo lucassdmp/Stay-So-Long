@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <SFML/Graphics.hpp>
 
-
 class GameObject{
     protected:
         glm::vec2 pos;

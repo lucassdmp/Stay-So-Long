@@ -14,6 +14,7 @@ Game::Game()
   this->clock = new sf::Clock();
   this->time = new sf::Time();
   this->deltaTime = new sf::Time();
+  this->player = Player(100, 100, 3, glm::vec2(100, 100), glm::vec2(25, 55), sf::Color::Red);
 
   glViewport(0, 0, desktop.width, desktop.height);
   glMatrixMode(GL_PROJECTION);
@@ -22,9 +23,6 @@ Game::Game()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   window->setFramerateLimit(60);
-
-
-  player = Player(100, 100, 0.2, glm::vec2(100, 100), glm::vec2(25, 55), sf::Color::Red);
 }
 
 Game::~Game()
@@ -36,10 +34,13 @@ Game::~Game()
   delete this->deltaTime;
 }
 
-void Game::Run(){
-  while(this->window->isOpen()){
-    while(this->window->pollEvent(*this->event)){
-      this->HandleInput();  
+void Game::Run()
+{
+  while (this->window->isOpen())
+  {
+    while (this->window->pollEvent(*this->event))
+    {
+      this->HandleInput();
     }
     *this->deltaTime = this->clock->restart();
     this->Render();
@@ -63,17 +64,38 @@ void Game::Render()
 
 void Game::HandleInput()
 {
-  if(this->event->type == sf::Event::Closed)
+  if (this->event->type == sf::Event::Closed)
     this->window->close();
-  if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-    this->window->close();
-  if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-    this->player.move(glm::vec2(0, this->player.getSpeed()));
-  if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-    this->player.move(glm::vec2(0, -this->player.getSpeed()));
-  if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-    this->player.move(glm::vec2(this->player.getSpeed(), 0));
-  if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-    this->player.move(glm::vec2(-this->player.getSpeed(), 0));
-  
+
+  if (this->event->type == sf::Event::KeyPressed)
+  {
+    if (this->event->key.code == sf::Keyboard::Escape)
+      this->window->close();
+
+    if (this->event->key.code == sf::Keyboard::W)
+      this->player.moveUp();
+
+    if (this->event->key.code == sf::Keyboard::S)
+      this->player.moveDown();
+
+    if (this->event->key.code == sf::Keyboard::D)
+      this->player.moveRight();
+
+    if (this->event->key.code == sf::Keyboard::A)
+      this->player.moveLeft();
+  }
+  if(this->event->type == sf::Event::KeyReleased)
+  {
+    if (this->event->key.code == sf::Keyboard::W)
+      this->player.stopUp();
+
+    if (this->event->key.code == sf::Keyboard::S)
+      this->player.stopDown();
+
+    if (this->event->key.code == sf::Keyboard::D)
+      this->player.stopRight();
+
+    if (this->event->key.code == sf::Keyboard::A)
+      this->player.stopLeft();
+  }
 }

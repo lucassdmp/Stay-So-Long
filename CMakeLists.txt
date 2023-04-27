@@ -14,6 +14,7 @@ set(SOURCES
   src/Util/Shapes.cpp
   src/Entities/Player.cpp
   src/Util/GameObject.cpp
+  src/Entities/Entity.cpp
 )
 
 # Add the executable
