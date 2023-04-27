@@ -14,7 +14,7 @@ Game::Game()
   this->clock = new sf::Clock();
   this->time = new sf::Time();
   this->deltaTime = new sf::Time();
-  this->player = Player(100, 100, 3, glm::vec2(100, 100), glm::vec2(25, 55), sf::Color::Red);
+  this->player = Player(100, 100, 3, glm::vec2(100, 100), glm::vec2(10, 20), sf::Color::Red);
 
   glViewport(0, 0, desktop.width, desktop.height);
   glMatrixMode(GL_PROJECTION);
@@ -58,6 +58,7 @@ void Game::Render()
   glPopMatrix();
 
   this->player.draw();
+  this->player.updateAttacks();
 
   this->window->display();
 }
@@ -83,8 +84,10 @@ void Game::HandleInput()
 
     if (this->event->key.code == sf::Keyboard::A)
       this->player.moveLeft();
+    if (this->event->key.code == sf::Keyboard::Space)
+      this->player.attack();
   }
-  if(this->event->type == sf::Event::KeyReleased)
+  if (this->event->type == sf::Event::KeyReleased)
   {
     if (this->event->key.code == sf::Keyboard::W)
       this->player.stopUp();
