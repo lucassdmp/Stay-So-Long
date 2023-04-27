@@ -6,11 +6,11 @@
 class Game
 {
 private:
-  sf::RenderWindow* window;
-  sf::Event* event;
-  sf::Clock* clock;
-  sf::Time* time;
-  sf::Time* deltaTime;
+  sf::RenderWindow *window;
+  sf::Event *event;
+  sf::Clock *clock;
+  sf::Time *time;
+  sf::Time *deltaTime;
   Player player;
 
 public:

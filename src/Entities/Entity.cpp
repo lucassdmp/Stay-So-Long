@@ -28,34 +28,37 @@ Entity::Entity() : GameObject()
 }
 
 void Entity::update()
-{   
-    if(this->current_health <= 0)
+{
+    if (this->current_health <= 0)
     {
         this->isAlive = false;
     }
 
-    if(this->current_health < this->max_health)
+    if (this->current_health < this->max_health)
     {
         this->color.b = (float)(this->max_health - this->current_health);
     }
 
-
-    //Movement Logic
+    // Movement Logic
     if (this->movingUp)
     {
         this->pos.y += this->getSpeed();
+        this->looking_at = Direction::UP;
     }
     if (this->movingDown)
     {
         this->pos.y -= this->getSpeed();
+        this->looking_at = Direction::DOWN;
     }
     if (this->movingLeft)
     {
         this->pos.x -= this->getSpeed();
+        this->looking_at = Direction::LEFT;
     }
     if (this->movingRight)
     {
         this->pos.x += this->getSpeed();
+        this->looking_at = Direction::RIGHT;
     }
 }
 
