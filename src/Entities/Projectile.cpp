@@ -1,4 +1,5 @@
 #include "Projectile.hpp"
+#include <iostream>
 
 Projectile::Projectile(glm::vec2 direction, glm::vec2 pos, glm::vec2 size, sf::Color color) : GameObject(pos, size, color){
     this->direction = direction;
