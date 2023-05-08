@@ -42,12 +42,12 @@ void Entity::update()
     // Movement Logic
     if (this->movingUp)
     {
-        this->pos.y += this->getSpeed();
+        this->pos.y -= this->getSpeed();
         this->looking_at = Direction::UP;
     }
     if (this->movingDown)
     {
-        this->pos.y -= this->getSpeed();
+        this->pos.y += this->getSpeed();
         this->looking_at = Direction::DOWN;
     }
     if (this->movingLeft)

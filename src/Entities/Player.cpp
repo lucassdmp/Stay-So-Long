@@ -3,15 +3,16 @@
 #include "../Util/functions.hpp"
 #include <iostream>
 
-Player::Player(int max_health, int current_health, float speed,
-               glm::vec2 pos, glm::vec2 size, sf::Color color) : Entity(max_health, current_health, speed, pos, size, color) {
-                    this->desktop = sf::VideoMode::getDesktopMode();
-                    this->animationTime = 1.0f;
-                    this->animationSpeed = 0.01f;
-               }
+Player::Player(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color) : 
+    Entity(max_health, current_health, speed, pos, size, color) {
+        this->desktop = sf::VideoMode::getDesktopMode();
+        this->animationTime = 1.0f;
+        this->animationSpeed = 0.01f;
+}
+
 Player::Player() : Entity() {}
 
-void Player::draw(float dt)
+void Player::draw(float dt, sf::RenderWindow &window)
 {
     this->update();
 
@@ -38,11 +39,11 @@ void Player::draw(float dt)
     glColor3f(0.0f, 0.0f, 0.0f);
     
     if (this->getLookingAt() == Direction::RIGHT)
-        glTranslatef(this->pos.x + 20.0f, this->pos.y + 25.0f, 0.0f);
+        glTranslatef(this->pos.x + 20.0f, this->pos.y - 25.0f, 0.0f);
     else if (this->getLookingAt() == Direction::LEFT)
-        glTranslatef(this->pos.x - 20.0f, this->pos.y + 25.0f, 0.0f);
+        glTranslatef(this->pos.x - 20.0f, this->pos.y - 25.0f, 0.0f);
     else if (this->getLookingAt() == Direction::DOWN)
-        glTranslatef(this->pos.x + 13.0f, this->pos.y + 25.0f, 0.0f);
+        glTranslatef(this->pos.x + 13.0f, this->pos.y - 25.0f, 0.0f);
 
     glScalef(5.0f, 5.0f, 1.0f);
     Shapes::Square();
@@ -52,11 +53,14 @@ void Player::draw(float dt)
     glColor3f(0.0f, 0.0f, 0.0f);
 
     if (this->getLookingAt() == Direction::DOWN)
-        glTranslatef(this->pos.x - 13.0f, this->pos.y + 25.0f, 0.0f);
+        glTranslatef(this->pos.x - 13.0f, this->pos.y - 25.0f, 0.0f);
 
     glScalef(5.0f, 5.0f, 1.0f);
     Shapes::Square();
     glPopMatrix();
+
+    gun.update(this->pos, window);
+    gun.draw();
 }
 
 void Player::attack()

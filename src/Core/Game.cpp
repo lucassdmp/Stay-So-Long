@@ -15,7 +15,7 @@ Game::Game()
   glViewport(0, 0, desktop.width, desktop.height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, desktop.width, 0, desktop.height, -1, 1);
+  glOrtho(0, desktop.width, desktop.height, 0, -1, 1);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   window->setFramerateLimit(60);
@@ -43,7 +43,7 @@ void Game::Render()
 {
   this->window->clear(sf::Color::Black);
 
-  this->player.draw(this->dt);
+  this->player.draw(this->dt, *this->window);
   this->player.updateAttacks();
 
   this->window->display();
