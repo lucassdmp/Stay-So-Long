@@ -13,11 +13,13 @@ public:
     Player(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color);
     Player();
 
-    void draw();
+    void draw(float dt);
     void attack();
     void updateAttacks();
 private:
     int projectileN = 0;
+    float animationTime;
+    float animationSpeed;
     std::vector<Projectile> projectiles;
     sf::VideoMode desktop;
 };

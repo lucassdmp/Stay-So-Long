@@ -1,24 +1,61 @@
 #include "Player.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include "../Util/functions.hpp"
+#include <iostream>
 
 Player::Player(int max_health, int current_health, float speed,
                glm::vec2 pos, glm::vec2 size, sf::Color color) : Entity(max_health, current_health, speed, pos, size, color) {
                     this->desktop = sf::VideoMode::getDesktopMode();
+                    this->animationTime = 1.0f;
+                    this->animationSpeed = 0.01f;
                }
 Player::Player() : Entity() {}
 
-void Player::draw()
+void Player::draw(float dt)
 {
     this->update();
+
+    animationTime -= animationSpeed;
+
+    if (animationTime < 0.0f)
+    {
+        animationTime = 0.5f;
+    }
+
+    float waveX = wave(this->animationTime, 0.2f, 0.3f, 0.5f);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(this->pos.x, this->pos.y, 0.0f));
+    model = glm::scale(model, glm::vec3(this->size.x * waveX + 30.0f, -this->size.y * waveX + 70.0f, 1.0f));
+
     glPushMatrix();
-    glTranslatef(this->pos.x, this->pos.y, 1.0f);
-    glScalef(this->size.x, this->size.y, 1.0f);
-    glColor4f(this->color.r, this->color.g, this->color.b, this->color.a);
+    glColor3f(this->color.r, this->color.g, this->color.b);
+    glMultMatrixf(&model[0][0]);
     Shapes::Square();
     glPopMatrix();
+
     glPushMatrix();
-    glTranslatef(this->pos.x, this->pos.y + this->size.y / 2, 1.0f);
-    glColor4f(this->color.r, this->color.g, this->color.b, this->color.a);
-    Shapes::Circle(15, 36);
+    glColor3f(0.0f, 0.0f, 0.0f);
+    
+    if (this->getLookingAt() == Direction::RIGHT)
+        glTranslatef(this->pos.x + 20.0f, this->pos.y + 25.0f, 0.0f);
+    else if (this->getLookingAt() == Direction::LEFT)
+        glTranslatef(this->pos.x - 20.0f, this->pos.y + 25.0f, 0.0f);
+    else if (this->getLookingAt() == Direction::DOWN)
+        glTranslatef(this->pos.x + 13.0f, this->pos.y + 25.0f, 0.0f);
+
+    glScalef(5.0f, 5.0f, 1.0f);
+    Shapes::Square();
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0.0f, 0.0f, 0.0f);
+
+    if (this->getLookingAt() == Direction::DOWN)
+        glTranslatef(this->pos.x - 13.0f, this->pos.y + 25.0f, 0.0f);
+
+    glScalef(5.0f, 5.0f, 1.0f);
+    Shapes::Square();
     glPopMatrix();
 }
 

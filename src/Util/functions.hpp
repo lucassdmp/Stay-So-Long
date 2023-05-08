@@ -1,0 +1,1 @@
+float wave(float time, float from, float to, float duration);

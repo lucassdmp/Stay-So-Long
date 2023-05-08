@@ -7,10 +7,9 @@ class Game
 {
 private:
   sf::RenderWindow *window;
-  sf::Event *event;
-  sf::Clock *clock;
-  sf::Time *time;
-  sf::Time *deltaTime;
+  sf::Event event;
+  sf::Clock clock;
+  float dt;
   Player player;
 
 public:
