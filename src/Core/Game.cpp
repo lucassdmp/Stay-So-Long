@@ -5,14 +5,17 @@
 #include "../Util/Input.hpp"
 #include <iostream>
 
-#define SCREEN_WIDTH 1000
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 768
 
 Game::Game()
 {
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
   this->window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stay So Long");
-  this->player = Player(100, 100, 5.0f, glm::vec2(100, 100), glm::vec2(30, 60), sf::Color::Red);
+  this->window->setPosition(sf::Vector2i((desktop.width / 2) - (SCREEN_WIDTH / 2), (desktop.height / 2) - (SCREEN_HEIGHT / 2)));
+  this->window->setMouseCursorVisible(false);
+
+  this->player = Player(100, 100, 5.0f, glm::vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), glm::vec2(30, 60), sf::Color::Red);
 
   glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   glMatrixMode(GL_PROJECTION);

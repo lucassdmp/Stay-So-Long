@@ -25,4 +25,5 @@ class Gun
     void update(glm::vec2 player_pos, sf::RenderWindow &window, Entity &player);
     void handleShots(sf::RenderWindow &window);
     void draw();
+    void drawAim();
 };

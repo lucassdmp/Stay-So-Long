@@ -12,10 +12,13 @@ void Shapes::Square()
   glEnd();
 }
 
-void Shapes::Circle(float radius, int segments)
+void Shapes::Circle(float radius, int segments, bool fill)
 {
-  glBegin(GL_TRIANGLE_FAN);
-  glVertex2f(0, 0);
+  if (fill)
+    glBegin(GL_TRIANGLE_FAN);
+  else
+    glBegin(GL_LINE_STRIP);
+  
   for (int i = 0; i <= segments; i++)
   {
     float angle = i * 2.0f * M_PI / segments;
