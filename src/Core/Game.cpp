@@ -91,6 +91,11 @@ void Game::HandleInput()
   if (this->event.type == sf::Event::MouseButtonPressed)
   {
     if (this->event.mouseButton.button == sf::Mouse::Left)
-      this->player.getGun().shoot();
+      this->player.getGun().setShooting(true);
+  }
+  if (this->event.type == sf::Event::MouseButtonReleased)
+  {
+    if (this->event.mouseButton.button == sf::Mouse::Left)
+      this->player.getGun().setShooting(false);
   }
 }

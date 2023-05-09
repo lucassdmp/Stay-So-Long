@@ -16,7 +16,10 @@ Gun::~Gun()
 
 void Gun::shoot()
 {
-  std::cout << "pew" << std::endl;
+  if (this->shot_timer < this->shot_cooldown)
+    return;
+
+  this->shot_timer = 0.0f;
 
   glm::vec2 direction = glm::vec2(this->mouse_pos.x - this->pos.x, this->mouse_pos.y - this->pos.y);
 
@@ -26,8 +29,6 @@ void Gun::shoot()
   direction.y /= length;
   direction *= 10.0f; // speed
 
-  std::cout << "direction: " << direction.x << ", " << direction.y << std::endl;
-
   glm::vec2 bullet_start_pos = this->pos + this->offset;
 
   Projectile projectile = Projectile(direction, bullet_start_pos, glm::vec2(10.0f, 10.0f), sf::Color::White);
@@ -35,8 +36,12 @@ void Gun::shoot()
   this->projectiles.push_back(projectile);
 }
 
-void Gun::update(glm::vec2 player_pos, sf::RenderWindow &window, Entity &player)
+void Gun::handleShots(sf::RenderWindow &window)
 {
+  this->shot_timer += 0.1f;
+  if (this->is_shooting)
+    this->shoot();
+
   for (unsigned int i = 0; i < this->projectiles.size(); i++)
   {
     this->projectiles[i].update();
@@ -44,6 +49,11 @@ void Gun::update(glm::vec2 player_pos, sf::RenderWindow &window, Entity &player)
       this->projectiles.erase(this->projectiles.begin() + i);
     this->projectiles[i].draw();
   }
+}
+
+void Gun::update(glm::vec2 player_pos, sf::RenderWindow &window, Entity &player)
+{
+  this->handleShots(window);
 
   this->pos = player_pos;
 
