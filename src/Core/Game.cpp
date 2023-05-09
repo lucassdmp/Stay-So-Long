@@ -2,6 +2,8 @@
 #include "Game.hpp"
 #include "../Util/Shapes.hpp"
 #include "../Entities/Player.hpp"
+#include "../Util/Input.hpp"
+#include <iostream>
 
 #define SCREEN_WIDTH 1000
 #define SCREEN_HEIGHT 720
@@ -34,6 +36,7 @@ void Game::Run()
     {
       this->HandleInput();
     }
+
     this->dt = this->clock.restart().asSeconds();
     this->Render();
   }
@@ -43,8 +46,7 @@ void Game::Render()
 {
   this->window->clear(sf::Color::Black);
 
-  this->player.draw(this->dt, *this->window);
-  this->player.updateAttacks();
+  this->player.fixedUpdate(this->dt, *this->window);
 
   this->window->display();
 }
@@ -54,48 +56,23 @@ void Game::HandleInput()
   if (this->event.type == sf::Event::Closed)
     this->window->close();
 
+  // handle keyboard input
   if (this->event.type == sf::Event::KeyPressed)
   {
+    Input::set_key(this->event.key.code, true);
     if (this->event.key.code == sf::Keyboard::Escape)
       this->window->close();
-
-    if (this->event.key.code == sf::Keyboard::W)
-      this->player.moveUp();
-
-    if (this->event.key.code == sf::Keyboard::S)
-      this->player.moveDown();
-
-    if (this->event.key.code == sf::Keyboard::D)
-      this->player.moveRight();
-
-    if (this->event.key.code == sf::Keyboard::A)
-      this->player.moveLeft();
-    if (this->event.key.code == sf::Keyboard::Space)
-      this->player.attack();
   }
   if (this->event.type == sf::Event::KeyReleased)
-  {
-    if (this->event.key.code == sf::Keyboard::W)
-      this->player.stopUp();
+    Input::set_key(this->event.key.code, false);
 
-    if (this->event.key.code == sf::Keyboard::S)
-      this->player.stopDown();
-
-    if (this->event.key.code == sf::Keyboard::D)
-      this->player.stopRight();
-
-    if (this->event.key.code == sf::Keyboard::A)
-      this->player.stopLeft();
-  }
-
+  // handle mouse input
   if (this->event.type == sf::Event::MouseButtonPressed)
-  {
-    if (this->event.mouseButton.button == sf::Mouse::Left)
-      this->player.getGun().setShooting(true);
-  }
+    Input::set_mouse_button(this->event.mouseButton.button, true);
   if (this->event.type == sf::Event::MouseButtonReleased)
-  {
-    if (this->event.mouseButton.button == sf::Mouse::Left)
-      this->player.getGun().setShooting(false);
-  }
+    Input::set_mouse_button(this->event.mouseButton.button, false);
+
+  // handle mouse movement
+  if (this->event.type == sf::Event::MouseMoved)
+    Input::set_mouse_pos(glm::vec2(this->event.mouseMove.x, this->event.mouseMove.y));
 }

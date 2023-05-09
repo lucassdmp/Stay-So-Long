@@ -20,9 +20,7 @@ private:
     int current_health;
     Direction looking_at;
     float speed;
-
-protected:
-    bool movingUp, movingDown, movingLeft, movingRight, isAlive;
+    bool isAlive;
 
 public:
     Entity(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color);
@@ -39,15 +37,4 @@ public:
     void setLookingAt(Direction direction);
     void setSpeed(float speed);
     void setIsAlive(bool isAlive);
-
-    void moveUp();
-    void moveDown();
-    void moveLeft();
-    void moveRight();
-
-    void stopUp();
-    void stopDown();
-    void stopLeft();
-    void stopRight();
-
 };
