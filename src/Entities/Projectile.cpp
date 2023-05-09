@@ -9,6 +9,9 @@ Projectile::Projectile() : GameObject(){
     this->direction = glm::vec2(0, 0);
 }
 
+Projectile::~Projectile(){
+}
+
 void Projectile::draw(){
     glPushMatrix();
     glTranslatef(this->pos.x, this->pos.y, 0);

@@ -9,13 +9,13 @@
 Game::Game()
 {
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-  this->window = new sf::RenderWindow(sf::VideoMode(desktop.width, desktop.height), "Stay So Long", sf::Style::Fullscreen);
-  this->player = Player(100, 100, 5.0f, glm::vec2(100, 100), glm::vec2(30, 70), sf::Color::Red);
+  this->window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stay So Long");
+  this->player = Player(100, 100, 5.0f, glm::vec2(100, 100), glm::vec2(30, 60), sf::Color::Red);
 
-  glViewport(0, 0, desktop.width, desktop.height);
+  glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, desktop.width, 0, desktop.height, -1, 1);
+  glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 1);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   window->setFramerateLimit(60);
@@ -43,7 +43,7 @@ void Game::Render()
 {
   this->window->clear(sf::Color::Black);
 
-  this->player.draw(this->dt);
+  this->player.draw(this->dt, *this->window);
   this->player.updateAttacks();
 
   this->window->display();
@@ -86,5 +86,16 @@ void Game::HandleInput()
 
     if (this->event.key.code == sf::Keyboard::A)
       this->player.stopLeft();
+  }
+
+  if (this->event.type == sf::Event::MouseButtonPressed)
+  {
+    if (this->event.mouseButton.button == sf::Mouse::Left)
+      this->player.getGun().setShooting(true);
+  }
+  if (this->event.type == sf::Event::MouseButtonReleased)
+  {
+    if (this->event.mouseButton.button == sf::Mouse::Left)
+      this->player.getGun().setShooting(false);
   }
 }

@@ -17,6 +17,7 @@ set(SOURCES
   src/Util/functions.cpp
   src/Entities/Entity.cpp
   src/Entities/Projectile.cpp
+  src/Entities/Gun.cpp
 )
 
 # Add the executable
