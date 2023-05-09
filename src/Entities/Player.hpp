@@ -18,6 +18,8 @@ public:
     void attack();
     void updateAttacks();
 
+    Gun &getGun() { return this->gun; }
+
 private:
     int projectileN = 0;
     float animationTime;

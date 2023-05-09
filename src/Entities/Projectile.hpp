@@ -10,6 +10,7 @@ class Projectile : public GameObject{
 public:
     Projectile();
     Projectile(glm::vec2 direction, glm::vec2 pos, glm::vec2 size, sf::Color color);
+    virtual ~Projectile();
     void draw();
     void update();
     void setDirection(glm::vec2 direction);

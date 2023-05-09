@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <iostream>
+#include "Projectile.hpp"
 
 Gun::Gun()
 {
@@ -15,13 +16,38 @@ Gun::~Gun()
 
 void Gun::shoot()
 {
+  std::cout << "pew" << std::endl;
+
+  glm::vec2 direction = glm::vec2(this->mouse_pos.x - this->pos.x, this->mouse_pos.y - this->pos.y);
+
+  // normalize direction
+  float length = sqrt(pow(direction.x, 2) + pow(direction.y, 2));
+  direction.x /= length;
+  direction.y /= length;
+  direction *= 10.0f; // speed
+
+  std::cout << "direction: " << direction.x << ", " << direction.y << std::endl;
+
+  glm::vec2 bullet_start_pos = this->pos + this->offset;
+
+  Projectile projectile = Projectile(direction, bullet_start_pos, glm::vec2(10.0f, 10.0f), sf::Color::White);
+
+  this->projectiles.push_back(projectile);
 }
 
 void Gun::update(glm::vec2 player_pos, sf::RenderWindow &window, Entity &player)
 {
+  for (unsigned int i = 0; i < this->projectiles.size(); i++)
+  {
+    this->projectiles[i].update();
+    if (this->projectiles[i].getPos().x > window.getSize().x || this->projectiles[i].getPos().x < 0 || this->projectiles[i].getPos().y > window.getSize().y || this->projectiles[i].getPos().y < 0)
+      this->projectiles.erase(this->projectiles.begin() + i);
+    this->projectiles[i].draw();
+  }
+
   this->pos = player_pos;
 
-  sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+  this->mouse_pos = sf::Mouse::getPosition(window);
 
   float adjacent = mouse_pos.x - this->pos.x;
   float opposite = mouse_pos.y - this->pos.y;
