@@ -14,9 +14,8 @@ public:
     Player();
     Player(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color);
 
+    void fixedUpdate(float dt, sf::RenderWindow &window);
     void draw(float dt, sf::RenderWindow &window);
-    void attack();
-    void updateAttacks();
 
     Gun &getGun() { return this->gun; }
 
@@ -25,7 +24,5 @@ private:
     float animationTime;
     float animationSpeed;
     std::vector<Projectile> projectiles;
-    sf::VideoMode desktop;
-
     Gun gun;
 };

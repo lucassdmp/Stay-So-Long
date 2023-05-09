@@ -5,6 +5,7 @@
 #include <SFML/Window/Mouse.hpp>
 #include <iostream>
 #include "Projectile.hpp"
+#include "../Util/Input.hpp"
 
 Gun::Gun()
 {
@@ -21,7 +22,7 @@ void Gun::shoot()
 
   this->shot_timer = 0.0f;
 
-  glm::vec2 direction = glm::vec2(this->mouse_pos.x - this->pos.x, this->mouse_pos.y - this->pos.y);
+  glm::vec2 direction = glm::vec2(Input::mouse_pos.x - this->pos.x, Input::mouse_pos.y - this->pos.y);
 
   // normalize direction
   float length = sqrt(pow(direction.x, 2) + pow(direction.y, 2));
@@ -39,7 +40,7 @@ void Gun::shoot()
 void Gun::handleShots(sf::RenderWindow &window)
 {
   this->shot_timer += 0.1f;
-  if (this->is_shooting)
+  if (Input::get_mouse_button(sf::Mouse::Left))
     this->shoot();
 
   for (unsigned int i = 0; i < this->projectiles.size(); i++)
@@ -57,14 +58,12 @@ void Gun::update(glm::vec2 player_pos, sf::RenderWindow &window, Entity &player)
 
   this->pos = player_pos;
 
-  this->mouse_pos = sf::Mouse::getPosition(window);
-
-  float adjacent = mouse_pos.x - this->pos.x;
-  float opposite = mouse_pos.y - this->pos.y;
+  float adjacent = Input::mouse_pos.x - this->pos.x;
+  float opposite = Input::mouse_pos.y - this->pos.y;
   float hip = sqrt(pow(adjacent, 2) + pow(opposite, 2));
 
   // invert angle if mouse is on below of the player
-  if (mouse_pos.y < this->pos.y)
+  if (Input::mouse_pos.y < this->pos.y)
     this->angle = -acos(adjacent / hip) * 180 / M_PI;
   else
     this->angle = acos(adjacent / hip) * 180 / M_PI;

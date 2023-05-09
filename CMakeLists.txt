@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.16)
 
 project(Stay-So-Long)
 
@@ -14,6 +14,7 @@ set(SOURCES
   src/Util/Shapes.cpp
   src/Entities/Player.cpp
   src/Util/GameObject.cpp
+  src/Util/Input.cpp
   src/Util/functions.cpp
   src/Entities/Entity.cpp
   src/Entities/Projectile.cpp
