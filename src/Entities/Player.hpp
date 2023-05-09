@@ -11,8 +11,8 @@
 class Player : public Entity
 {
 public:
-    Player(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color);
     Player();
+    Player(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color);
 
     void draw(float dt, sf::RenderWindow &window);
     void attack();

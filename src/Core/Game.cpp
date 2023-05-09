@@ -10,7 +10,7 @@ Game::Game()
 {
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
   this->window = new sf::RenderWindow(sf::VideoMode(desktop.width, desktop.height), "Stay So Long", sf::Style::Fullscreen);
-  this->player = Player(100, 100, 5.0f, glm::vec2(100, 100), glm::vec2(30, 70), sf::Color::Red);
+  this->player = Player(100, 100, 5.0f, glm::vec2(100, 100), glm::vec2(30, 60), sf::Color::Red);
 
   glViewport(0, 0, desktop.width, desktop.height);
   glMatrixMode(GL_PROJECTION);
