@@ -52,6 +52,35 @@ void Gun::handleShots(sf::RenderWindow &window)
   }
 }
 
+void Gun::drawAim()
+{
+  glColor3f(1.0f, 1.0f, 1.0f);
+  // aim circle outline
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glPushMatrix();
+    glTranslatef(Input::mouse_pos.x, Input::mouse_pos.y, 0.0f);
+    Shapes::Circle(16.0f, 10, false);
+  glPopMatrix();
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  // aim crosshair lines and middle dot
+  for (int i = 0; i < 4; i++)
+  {
+    glPushMatrix();
+      glTranslatef(Input::mouse_pos.x, Input::mouse_pos.y, 0.0f);
+      glRotatef(i * 90.0f, 0.0f, 0.0f, 1.0f);
+      glTranslatef(0.0f, 10.0f, 0.0f);
+      glScalef(1.0f, 5.0f, 1.0f);
+      Shapes::Square();
+    glPopMatrix();
+  }
+  glPushMatrix();
+    glTranslatef(Input::mouse_pos.x, Input::mouse_pos.y, 0.0f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    Shapes::Square();
+  glPopMatrix();
+}
+
 void Gun::update(glm::vec2 player_pos, sf::RenderWindow &window, Entity &player)
 {
   this->handleShots(window);
@@ -95,6 +124,7 @@ void Gun::update(glm::vec2 player_pos, sf::RenderWindow &window, Entity &player)
   }
 
   this->draw();
+  this->drawAim();
 }
 
 void Gun::draw()
