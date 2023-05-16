@@ -4,6 +4,7 @@
 #include <iostream>
 #include "../Util/Input.hpp"
 #include <cmath>
+#include <algorithm>
 
 Player::Player(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color) : 
     Entity(max_health, current_health, speed, pos, size, color) {
@@ -12,28 +13,87 @@ Player::Player(int max_health, int current_health, float speed, glm::vec2 pos, g
 Player::Player() : Entity() {}
 
 void Player::fixedUpdate(float dt, sf::RenderWindow &window)
-{
-    if (Input::get_key(sf::Keyboard::W))
-        this->pos.y -= this->getSpeed();
-    if (Input::get_key(sf::Keyboard::A))
-        this->pos.x -= this->getSpeed();
-    if (Input::get_key(sf::Keyboard::S))
-        this->pos.y += this->getSpeed();
-    if (Input::get_key(sf::Keyboard::D))
-        this->pos.x += this->getSpeed();
-
-    glm::vec2 lookDir = (Input::mouse_pos - this->pos);
+{    
+    lookDir = (Input::mouse_pos - this->pos);
     lookDir = glm::normalize(lookDir);
     angle = (atan2(lookDir.y, lookDir.x) * 180 / M_PI) - 90.0f;
 
+    float moveX = 0.0f;
+    float moveY = 0.0f;
+
+    if (Input::get_key(sf::Keyboard::W))
+        moveY = -1.0f;
+    if (Input::get_key(sf::Keyboard::S))
+        moveY = 1.0f;
+    if (Input::get_key(sf::Keyboard::A))
+        moveX = -1.0f;
+    if (Input::get_key(sf::Keyboard::D))
+        moveX = 1.0f;
+
+    moveDir = glm::vec2(moveX, moveY);
+    // normalize the moveDir so that the player doesn't move faster diagonally
+    if (glm::length(moveDir) > 0.0f)
+        moveDir = glm::normalize(moveDir);
+
+    this->move(dt);
     this->update();
     this->handleShots(window);
     this->draw(dt, window);
 }
 
-void Player::move()
+void Player::move(float dt)
 {
+    // acceleration
+    this->velocity += moveDir * this->acceleration;
 
+    if (this->velocity.x > 0.0f)
+    {
+        // max velocity check x positive
+        if (this->velocity.x > this->max_speed)
+            this->velocity.x = this->max_speed;
+
+        // deceleration
+        this->velocity.x -= this->deceleration;
+        if (this->velocity.x < 0.0f)
+            this->velocity.x = 0.0f;
+    }
+    else if (this->velocity.x < 0.0f)
+    {
+        // max velocity check x negative
+        if (this->velocity.x < -this->max_speed)
+            this->velocity.x = -this->max_speed;
+
+        // deceleration
+        this->velocity.x += this->deceleration;
+        if (this->velocity.x > 0.0f)
+            this->velocity.x = 0.0f;
+    }
+
+    if (this->velocity.y > 0.0f)
+    {
+        // max velocity check y positive
+        if (this->velocity.y > this->max_speed)
+            this->velocity.y = this->max_speed;
+
+        // deceleration
+        this->velocity.y -= this->deceleration;
+        if (this->velocity.y < 0.0f)
+            this->velocity.y = 0.0f;
+    }
+    else if (this->velocity.y < 0.0f)
+    {
+        // max velocity check y negative
+        if (this->velocity.y < -this->max_speed)
+            this->velocity.y = -this->max_speed;
+
+        // deceleration
+        this->velocity.y += this->deceleration;
+        if (this->velocity.y > 0.0f)
+            this->velocity.y = 0.0f;
+    }
+
+
+    this->pos += this->velocity * dt;
 }
 
 void Player::handleShots(sf::RenderWindow &window)
