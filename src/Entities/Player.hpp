@@ -4,7 +4,6 @@
 #include "../Entities/Entity.hpp"
 #include <SFML/OpenGL.hpp>
 #include "Projectile.hpp"
-#include "Gun.hpp"
 #include <vector>
 #include <SFML/Window.hpp>
 
