@@ -15,7 +15,7 @@ Game::Game()
   this->window->setPosition(sf::Vector2i((desktop.width / 2) - (SCREEN_WIDTH / 2), (desktop.height / 2) - (SCREEN_HEIGHT / 2)));
   this->window->setMouseCursorVisible(false);
 
-  this->player = Player(100, 100, 5.0f, glm::vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), glm::vec2(30, 60), sf::Color::Red);
+  this->player = Player(100, 100, 5.0f, glm::vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), glm::vec2(20, 20), sf::Color::Blue);
 
   glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   glMatrixMode(GL_PROJECTION);
