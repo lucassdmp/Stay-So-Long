@@ -15,7 +15,7 @@ Game::Game()
   this->window->setPosition(sf::Vector2i((desktop.width / 2) - (SCREEN_WIDTH / 2), (desktop.height / 2) - (SCREEN_HEIGHT / 2)));
   this->window->setMouseCursorVisible(false);
 
-  this->player = Player(100, 100, 5.0f, glm::vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), glm::vec2(30, 60), sf::Color::Red);
+  this->player = Player(100, 100, 5.0f, glm::vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), glm::vec2(20, 20), sf::Color::Yellow);
 
   glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   glMatrixMode(GL_PROJECTION);
@@ -24,6 +24,13 @@ Game::Game()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   window->setFramerateLimit(60);
+
+  background_texture = new sf::Texture();
+  if (!background_texture->loadFromFile("../src/Assets/background1.png"))
+    std::cout << "Error loading background texture" << std::endl;
+
+  this->background.setTexture(*background_texture);
+  this->background.setScale(SCREEN_WIDTH / background_texture->getSize().x, SCREEN_HEIGHT / background_texture->getSize().y);
 }
 
 Game::~Game()
@@ -49,6 +56,14 @@ void Game::Render()
 {
   this->window->clear(sf::Color::Black);
 
+  // SFML
+  this->window->pushGLStates();
+
+  this->window->draw(this->background);
+
+  this->window->popGLStates();
+
+  // OpenGL
   this->player.fixedUpdate(this->dt, *this->window);
 
   this->window->display();

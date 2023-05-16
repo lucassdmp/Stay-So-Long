@@ -16,13 +16,22 @@ public:
 
     void fixedUpdate(float dt, sf::RenderWindow &window);
     void draw(float dt, sf::RenderWindow &window);
-
-    Gun &getGun() { return this->gun; }
+    void shoot();
+    void handleShots(sf::RenderWindow &window);
+    void move(float dt);
+    void checkBounds(sf::RenderWindow &window);
 
 private:
-    int projectileN = 0;
-    float animationTime;
-    float animationSpeed;
+    float angle = 0.0f;
+    float shot_cooldown = 2.0f;
+    float shot_timer = 0.0f;
+    glm::vec2 lookDir;
     std::vector<Projectile> projectiles;
-    Gun gun;
+
+    float max_speed = 200.0f;
+    float acceleration = 10.0f;
+    float deceleration = 1.0f;
+    float current_speed = 0.0f;
+    glm::vec2 velocity;
+    glm::vec2 moveDir;
 };

@@ -11,6 +11,8 @@ private:
   sf::Clock clock;
   float dt;
   Player player;
+  sf::Texture *background_texture;
+  sf::Sprite background;
 
 public:
   Game();
