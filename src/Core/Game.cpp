@@ -26,7 +26,7 @@ Game::Game()
   window->setFramerateLimit(60);
 
   background_texture = new sf::Texture();
-  if (!background_texture->loadFromFile("/home/mateus/cpp/Stay-So-Long/src/Assets/background1.png"))
+  if (!background_texture->loadFromFile("../src/Assets/background1.png"))
     std::cout << "Error loading background texture" << std::endl;
 
   this->background.setTexture(*background_texture);
@@ -56,12 +56,14 @@ void Game::Render()
 {
   this->window->clear(sf::Color::Black);
 
+  // SFML
   this->window->pushGLStates();
 
   this->window->draw(this->background);
 
   this->window->popGLStates();
 
+  // OpenGL
   this->player.fixedUpdate(this->dt, *this->window);
 
   this->window->display();

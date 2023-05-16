@@ -45,7 +45,8 @@ void Player::fixedUpdate(float dt, sf::RenderWindow &window)
 void Player::move(float dt)
 {
     // acceleration
-    this->velocity += moveDir * this->acceleration;
+    if (Input::get_mouse_button(sf::Mouse::Right))
+        this->velocity += lookDir * this->acceleration;
 
     // is the player moving right
     if (this->velocity.x > 0.0f)
