@@ -36,6 +36,7 @@ void Player::fixedUpdate(float dt, sf::RenderWindow &window)
         moveDir = glm::normalize(moveDir);
 
     this->move(dt);
+    this->checkBounds(window);
     this->update();
     this->handleShots(window);
     this->draw(dt, window);
@@ -46,6 +47,7 @@ void Player::move(float dt)
     // acceleration
     this->velocity += moveDir * this->acceleration;
 
+    // is the player moving right
     if (this->velocity.x > 0.0f)
     {
         // max velocity check x positive
@@ -57,7 +59,7 @@ void Player::move(float dt)
         if (this->velocity.x < 0.0f)
             this->velocity.x = 0.0f;
     }
-    else if (this->velocity.x < 0.0f)
+    else if (this->velocity.x < 0.0f) // is the player moving left
     {
         // max velocity check x negative
         if (this->velocity.x < -this->max_speed)
@@ -69,7 +71,7 @@ void Player::move(float dt)
             this->velocity.x = 0.0f;
     }
 
-    if (this->velocity.y > 0.0f)
+    if (this->velocity.y > 0.0f) // is the player moving down
     {
         // max velocity check y positive
         if (this->velocity.y > this->max_speed)
@@ -80,7 +82,7 @@ void Player::move(float dt)
         if (this->velocity.y < 0.0f)
             this->velocity.y = 0.0f;
     }
-    else if (this->velocity.y < 0.0f)
+    else if (this->velocity.y < 0.0f) // is the player moving up
     {
         // max velocity check y negative
         if (this->velocity.y < -this->max_speed)
@@ -131,6 +133,19 @@ void Player::shoot()
   Projectile projectile = Projectile(direction, bullet_start_pos, glm::vec2(10.0f, 10.0f), sf::Color::White);
 
   this->projectiles.push_back(projectile);
+}
+
+void Player::checkBounds(sf::RenderWindow &window)
+{
+    // check if the player is out of bounds and if so, wrap them around to the other side
+    if (this->pos.x < 0.0f)
+        this->pos.x = window.getSize().x;
+    if (this->pos.x > window.getSize().x)
+        this->pos.x = 0.0f;
+    if (this->pos.y < 0.0f)
+        this->pos.y = window.getSize().y;
+    if (this->pos.y > window.getSize().y)
+        this->pos.y = 0.0f;
 }
 
 void Player::draw(float dt, sf::RenderWindow &window)

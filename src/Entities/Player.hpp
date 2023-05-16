@@ -19,6 +19,7 @@ public:
     void shoot();
     void handleShots(sf::RenderWindow &window);
     void move(float dt);
+    void checkBounds(sf::RenderWindow &window);
 
 private:
     float angle = 0.0f;
