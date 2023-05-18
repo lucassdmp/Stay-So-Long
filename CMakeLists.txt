@@ -11,6 +11,7 @@ find_package(OpenGL REQUIRED)
 set(SOURCES
   src/main.cpp
   src/Core/Game.cpp
+  src/Core/World.cpp
   src/Util/Shapes.cpp
   src/Entities/Player.cpp
   src/Util/GameObject.cpp
@@ -18,6 +19,7 @@ set(SOURCES
   src/Util/functions.cpp
   src/Entities/Entity.cpp
   src/Entities/Projectile.cpp
+  src/Entities/Asteroid.cpp
 )
 
 # Add the executable

@@ -2,17 +2,17 @@
 
 #include <SFML/Graphics.hpp>
 #include "../Entities/Player.hpp"
+#include "../Entities/Asteroid.hpp"
+#include "World.hpp"
 
 class Game
 {
 private:
-  sf::RenderWindow *window;
   sf::Event event;
   sf::Clock clock;
-  float dt;
-  Player player;
   sf::Texture *background_texture;
   sf::Sprite background;
+  float dt;
 
 public:
   Game();
@@ -22,4 +22,7 @@ public:
   void Update();
   void Render();
   void HandleInput();
+
+  static sf::RenderWindow *window;
+  static World *world;
 };
