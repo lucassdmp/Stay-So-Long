@@ -13,6 +13,10 @@ Asteroid::~Asteroid()
 
 void Asteroid::move()
 {
+  rotationAngle += 1.0f;
+  if (rotationAngle > 360.0f)
+    rotationAngle = 0.0f;
+
   // count how long the asteroid has been out of bounds
   if (pos.x < 0 || pos.x > Game::window->getSize().x || pos.y < 0 || pos.y > Game::window->getSize().y)
     outOfBoundsTimer += 0.1f;
@@ -89,6 +93,7 @@ void Asteroid::draw()
   glPushMatrix();
     glColor3f(0.4f, 0.4f, 0.4f);
     glTranslatef(pos.x, pos.y, 0.0f);
+    glRotatef(rotationAngle, 0, 0, 1);
     glScalef(size.x, size.y, 1.0f);
     glBegin(GL_POLYGON);
     for (unsigned int i = 0; i < vertices.size(); i++)
@@ -103,6 +108,7 @@ void Asteroid::draw()
   glPushMatrix();
     glColor3f(0.5f, 0.5f, 0.5f);
     glTranslatef(pos.x, pos.y, 0.0f);
+    glRotatef(rotationAngle, 0, 0, 1);
     glScalef(size.x - size.x / 3, size.y - size.y / 3, 1.0f);
     glBegin(GL_POLYGON);
     for (unsigned int i = 0; i < vertices.size(); i++)

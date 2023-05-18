@@ -12,6 +12,7 @@ private:
   std::vector<glm::vec2> vertices;
   glm::vec2 direction;
   float outOfBoundsTimer = 0.0f;
+  float rotationAngle = 0.0f;
 
 public:
   Asteroid(glm::vec2 playerPos, glm::vec2 size);
