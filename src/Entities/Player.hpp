@@ -20,6 +20,8 @@ public:
     void move(float dt);
     void checkBounds(sf::RenderWindow &window);
 
+    std::vector<Projectile> getProjectiles() { return projectiles; }
+
 private:
     float angle = 0.0f;
     float shot_cooldown = 2.0f;

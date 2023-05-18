@@ -21,6 +21,8 @@ public:
   void move();
   void draw();
 
+  void setOutOfBoundsTimer(float value) { this->outOfBoundsTimer = value; }
+
   void setDirectionAndInitialPosition(glm::vec2 playerPos);
 
   void generateVertices();

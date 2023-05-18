@@ -110,7 +110,8 @@ void Player::handleShots(sf::RenderWindow &window)
     this->projectiles[i].update();
     if (this->projectiles[i].getPos().x > window.getSize().x || this->projectiles[i].getPos().x < 0 || this->projectiles[i].getPos().y > window.getSize().y || this->projectiles[i].getPos().y < 0)
       this->projectiles.erase(this->projectiles.begin() + i);
-    this->projectiles[i].draw();
+    else
+        this->projectiles[i].draw();
   }
 }
 
