@@ -12,7 +12,6 @@ private:
   float *dt;
   sf::RenderWindow *window;
   Player *player;
-  std::vector<Asteroid> asteroids;
   float asteroidTimer;
   float asteroidTimerMax;
 
@@ -24,4 +23,6 @@ public:
   void Render();
 
   void handleAsteroids();
+  
+  static std::vector<Asteroid> asteroids;
 };

@@ -1,5 +1,6 @@
 #include "Asteroid.hpp"
 #include "../Core/Game.hpp"
+#include "../Util/functions.hpp"
 
 Asteroid::Asteroid(glm::vec2 playerPos, glm::vec2 size) : Entity(10, 10, 2.0f, glm::vec2(0.0f, 0.0f), size, sf::Color::Red)
 {
@@ -13,15 +14,15 @@ Asteroid::~Asteroid()
 
 void Asteroid::move()
 {
-  rotationAngle += 1.0f;
-  if (rotationAngle > 360.0f)
-    rotationAngle = 0.0f;
-
   // count how long the asteroid has been out of bounds
-  if (pos.x < 0 || pos.x > Game::window->getSize().x || pos.y < 0 || pos.y > Game::window->getSize().y)
+  if (isOutOfBounds(*this, *Game::window))
     outOfBoundsTimer += 0.1f;
   else
     outOfBoundsTimer = 0.0f;
+  
+  rotationAngle += 1.0f;
+  if (rotationAngle > 360.0f)
+    rotationAngle = 0.0f;
 
   pos += direction * this->getSpeed();
 

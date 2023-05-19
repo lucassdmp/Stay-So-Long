@@ -5,7 +5,7 @@ World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
 {
   player = new Player(100, 100, 10.0f, glm::vec2(window.getSize().x / 2, window.getSize().y / 2), glm::vec2(20.0f, 20.0f), sf::Color::White);
 
-  asteroidTimerMax = 20.0f;
+  asteroidTimerMax = 10.0f;
   asteroidTimer = 0.0f;
 }
 
@@ -39,29 +39,24 @@ void World::handleAsteroids()
   }
 
   // update asteroids
-  int sizeAsteroid = asteroids.size();
-  for (unsigned int i = 0; i < sizeAsteroid; i++)
+  for (auto &asteroid : asteroids)
   {
+    asteroid.move();
+  }
 
-    if (asteroids[i].getOutOfBoundsTimer() > 1.0f)
-    {
-      asteroids.erase(asteroids.begin() + i);
-      sizeAsteroid--;
-      continue;
-    }
-    else
-    {
-      asteroids[i].move();
-    }
-    
+  // check for collisions
+  if (asteroids.size() > 0)
+  {
+    auto i = std::remove_if(asteroids.begin(), asteroids.end(), [&](Asteroid &asteroid) {
+      if (asteroid.getOutOfBoundsTimer() > 1.0f)
+        return true;
 
-    for(unsigned int j = 0; j < this->player->getProjectiles().size(); j++){
-        if(checkCollision(asteroids[i], player->getProjectiles()[j])){
-            this->player->getProjectiles().erase(this->player->getProjectiles().begin() + j);
-            asteroids.erase(asteroids.begin() + i);
-            sizeAsteroid--;
-            continue;
-        }
-    }
+      return false;
+    });
+
+    if (i != asteroids.end())
+      asteroids.erase(i);
   }
 }
+
+std::vector<Asteroid> World::asteroids;

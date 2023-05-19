@@ -19,3 +19,9 @@ bool checkCollision(GameObject &obj1, GameObject &obj2)
     return leftBottom.x < obj2RightTop.x && rightTop.x > obj2LeftBottom.x &&
            leftBottom.y < obj2RightTop.y && rightTop.y > obj2LeftBottom.y;
 }
+
+bool isOutOfBounds(GameObject &obj, sf::RenderWindow &window)
+{
+    return obj.getPos().x < 0 || obj.getPos().x > window.getSize().x ||
+           obj.getPos().y < 0 || obj.getPos().y > window.getSize().y;
+}

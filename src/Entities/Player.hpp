@@ -28,7 +28,7 @@ private:
     float shot_timer = 0.0f;
     glm::vec2 lookDir;
     std::vector<Projectile> projectiles;
-
+    
     float max_speed = 200.0f;
     float acceleration = 10.0f;
     float deceleration = 1.0f;
