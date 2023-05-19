@@ -5,6 +5,7 @@
 #include "../Util/Input.hpp"
 #include <cmath>
 #include <algorithm>
+#include "../Core/World.hpp"
 
 Player::Player(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color) : 
     Entity(max_health, current_health, speed, pos, size, color) {
@@ -105,12 +106,28 @@ void Player::handleShots(sf::RenderWindow &window)
   if (Input::get_mouse_button(sf::Mouse::Left))
     this->shoot();
 
-  for (unsigned int i = 0; i < this->projectiles.size(); i++)
+  for (auto &projectile : projectiles)
   {
-    this->projectiles[i].update();
-    if (this->projectiles[i].getPos().x > window.getSize().x || this->projectiles[i].getPos().x < 0 || this->projectiles[i].getPos().y > window.getSize().y || this->projectiles[i].getPos().y < 0)
-      this->projectiles.erase(this->projectiles.begin() + i);
-    this->projectiles[i].draw();
+    projectile.update();
+
+    for (auto &asteroid : World::asteroids)
+    {
+        if (checkCollision(projectile, asteroid))
+        {
+            asteroid.setPos(glm::vec2(-100.0f, -100.0f));
+            projectile.setPos(glm::vec2(-100.0f, -100.0f));
+        }
+    }
+  }
+  
+  if (projectiles.size() > 0)
+  {
+    auto i = std::remove_if(projectiles.begin(), projectiles.end(), [&](GameObject o) {
+      return isOutOfBounds(o, window);
+    });
+
+    if (i != projectiles.end())
+      projectiles.erase(i);
   }
 }
 
