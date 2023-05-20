@@ -6,6 +6,9 @@
 #include <cmath>
 #include <algorithm>
 #include "../Core/World.hpp"
+#include "../Core/Game.hpp"
+
+#define HEALTH_BAR_HEIGHT 10.0f
 
 Player::Player(int max_health, int current_health, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color) : 
     Entity(max_health, current_health, speed, pos, size, color) {
@@ -41,6 +44,7 @@ void Player::fixedUpdate(float dt, sf::RenderWindow &window)
     this->update();
     this->handleShots(window);
     this->draw(dt, window);
+    this->drawHealthBar();
 }
 
 void Player::move(float dt)
@@ -168,11 +172,20 @@ void Player::checkBounds(sf::RenderWindow &window)
 
 void Player::draw(float dt, sf::RenderWindow &window)
 {
+    /* // draw the player's collision circle for debugging
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glPushMatrix();
+        glTranslatef(pos.x, pos.y, 0.0f);
+        glScalef(size.x, size.y, 1.0f);
+        Shapes::Circle(1, 16, false);
+    glPopMatrix(); */
+
     glColor3f(this->color.r, this->color.g, this->color.b);
     glPushMatrix();
     glTranslatef(this->pos.x, this->pos.y, 0.0f);
     glRotatef(angle, 0.0f, 0.0f, 1.0f);
     glScalef(this->size.x, this->size.y, 1.0f);
+    glTranslatef(0.0f, 0.5f, 0.0f);
     
         // spaceship body
         glBegin(GL_POLYGON);
@@ -207,4 +220,38 @@ void Player::draw(float dt, sf::RenderWindow &window)
         glEnd();
 
     glPopMatrix();
+
+/*  // draw the player's center position for debugging
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glPointSize(5.0f);
+    glBegin(GL_POINTS);
+        glVertex2f(this->pos.x, this->pos.y);
+    glEnd(); */
+}
+
+void Player::drawHealthBar()
+{   
+    glColor3f(0.5f, 0.5f, 0.5f);
+    glPushMatrix();
+    glTranslatef(Game::window->getSize().x / 2, Game::window->getSize().y - HEALTH_BAR_HEIGHT, 0.0f);
+    glScalef(this->getMaxHealth(), HEALTH_BAR_HEIGHT, 1.0f);
+
+    Shapes::Square();
+
+    glPopMatrix();
+
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glPushMatrix();
+    glTranslatef(Game::window->getSize().x / 2, Game::window->getSize().y - HEALTH_BAR_HEIGHT, 0.0f);
+    glScalef(this->getCurrentHealth(), HEALTH_BAR_HEIGHT, 1.0f);
+
+    Shapes::Square();
+
+    glPopMatrix();
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glPointSize(5.0f);
+    glBegin(GL_POINTS);
+        glVertex2f(Game::window->getSize().x / 2, Game::window->getSize().y - HEALTH_BAR_HEIGHT);
+    glEnd();
 }

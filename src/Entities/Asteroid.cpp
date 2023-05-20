@@ -68,7 +68,7 @@ void Asteroid::generateVertices()
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis(-1.0f, 1.0f);
 
-  float radius = 0.5f;
+  float radius = 1.0f;
   int numVertices = 10;
 
   for (unsigned int i = 0; i < numVertices; i++)
@@ -90,6 +90,14 @@ void Asteroid::generateVertices()
 
 void Asteroid::draw()
 {
+  // draw the asteroid's hitbox
+  /* glColor3f(1.0f, 0.0f, 0.0f);
+  glPushMatrix();
+    glTranslatef(pos.x, pos.y, 0.0f);
+    glScalef(size.x, size.y, 1.0f);
+    Shapes::Circle(1, 16, false);
+  glPopMatrix(); */
+
   // draw the outer asteroid polygon
   glPushMatrix();
     glColor3f(0.4f, 0.4f, 0.4f);
@@ -118,4 +126,11 @@ void Asteroid::draw()
     }
     glEnd();
   glPopMatrix();
+
+  // draw the asteroid's center position
+  /* glColor3f(1.0f, 1.0f, 1.0f);
+  glPointSize(5.0f);
+  glBegin(GL_POINTS);
+    glVertex2f(pos.x, pos.y);
+  glEnd(); */
 }

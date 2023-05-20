@@ -12,7 +12,7 @@ private:
   sf::Clock clock;
   sf::Texture *background_texture;
   sf::Sprite background;
-  float dt;
+
 
 public:
   Game();
@@ -25,4 +25,5 @@ public:
 
   static sf::RenderWindow *window;
   static World *world;
+  static float dt;
 };
