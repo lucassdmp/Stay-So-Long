@@ -1,5 +1,7 @@
 #include "functions.hpp"
 #include <cmath>
+#include <iostream>
+#include <GL/gl.h>
 
 float wave(float time, float from, float to, float duration) {
     float amplitude = (to - from) / 2.0f;
@@ -10,14 +12,28 @@ float wave(float time, float from, float to, float duration) {
 
 bool checkCollision(GameObject &obj1, GameObject &obj2)
 {
-    glm::vec2 leftBottom = obj1.getPos();
-    glm::vec2 rightTop = obj1.getPos() + obj1.getSize();
+    float distance_x = obj1.getPos().x - obj2.getPos().x;
+    float distance_y = obj1.getPos().y - obj2.getPos().y;
+    float length = sqrt(distance_x * distance_x + distance_y * distance_y);
 
-    glm::vec2 obj2LeftBottom = obj2.getPos();
-    glm::vec2 obj2RightTop = obj2.getPos() + obj2.getSize();
+    float radius1 = obj1.getSize().x / 2.0f;
+    float radius2 = obj2.getSize().x / 2.0f;
+    float radius_sum = radius1 + radius2;
 
-    return leftBottom.x < obj2RightTop.x && rightTop.x > obj2LeftBottom.x &&
-           leftBottom.y < obj2RightTop.y && rightTop.y > obj2LeftBottom.y;
+    float distance = length - radius_sum;
+    
+    /* draw collision line distance between objects
+    if (distance < radius_sum)
+        glColor3f(1.0f, 0.0f, 0.0f);
+    else
+        glColor3f(0.0f, 1.0f, 0.0f);
+
+    glBegin(GL_LINES);
+        glVertex2f(obj1.getPos().x, obj1.getPos().y);
+        glVertex2f(obj2.getPos().x, obj2.getPos().y);
+    glEnd(); */
+    
+    return distance < radius_sum;
 }
 
 bool isOutOfBounds(GameObject &obj, sf::RenderWindow &window)

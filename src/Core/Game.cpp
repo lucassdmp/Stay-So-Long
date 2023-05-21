@@ -99,3 +99,4 @@ void Game::HandleInput()
 
 sf::RenderWindow *Game::window = nullptr;
 World *Game::world = nullptr;
+float Game::dt = 0.0f;

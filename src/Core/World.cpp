@@ -32,8 +32,9 @@ void World::handleAsteroids()
     std::uniform_real_distribution<> dis(0.0f, 1.0f);
 
     int numAsteroids = std::round(dis(gen)) * 3 + 1;
+    float size = dis(gen) * 20.0f + 30.0f;
     for (int i = 0; i < 1; i++)
-      asteroids.push_back(Asteroid(player->getPos(), glm::vec2(50.0f, 50.0f)));
+      asteroids.push_back(Asteroid(player->getPos(), glm::vec2(size, size)));
 
     asteroidTimer = 0.0f;
   }
@@ -42,6 +43,22 @@ void World::handleAsteroids()
   for (auto &asteroid : asteroids)
   {
     asteroid.move();
+
+    for (auto &targetAsteroid: asteroids)
+    {
+      if (&asteroid != &targetAsteroid)
+      {
+        if (checkCollision(asteroid, targetAsteroid))
+        {
+          float distance = glm::distance(asteroid.getPos(), targetAsteroid.getPos());
+
+          glm::vec2 direction = glm::normalize(asteroid.getPos() - targetAsteroid.getPos());
+
+          asteroid.setDirection(direction);
+          targetAsteroid.setDirection(-direction);
+        }
+      }
+    }
   }
 
   // check for collisions
@@ -50,6 +67,12 @@ void World::handleAsteroids()
     auto i = std::remove_if(asteroids.begin(), asteroids.end(), [&](Asteroid &asteroid) {
       if (asteroid.getOutOfBoundsTimer() > 1.0f)
         return true;
+
+      if (checkCollision(*player, asteroid))
+      {
+        player->takeDamage(10);
+        return true;
+      }
 
       return false;
     });

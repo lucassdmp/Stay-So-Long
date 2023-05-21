@@ -19,6 +19,7 @@ public:
     void handleShots(sf::RenderWindow &window);
     void move(float dt);
     void checkBounds(sf::RenderWindow &window);
+    void drawHealthBar();
 
     std::vector<Projectile> getProjectiles() { return projectiles; }
 

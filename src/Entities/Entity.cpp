@@ -6,7 +6,6 @@ Entity::Entity(int max_health, int current_health, float speed, glm::vec2 pos, g
     this->max_health = max_health;
     this->current_health = current_health;
     this->speed = speed;
-    this->looking_at = Direction::DOWN;
     this->isAlive = true;
 }
 
@@ -15,7 +14,6 @@ Entity::Entity() : GameObject()
     this->max_health = 0;
     this->current_health = 0;
     this->speed = 0;
-    this->looking_at = Direction::DOWN;
     this->isAlive = true;
 }
 
@@ -28,54 +26,3 @@ void Entity::update()
         this->color.b = (float)(this->max_health - this->current_health);
 }
 
-// Getters And Setters
-
-int Entity::getCurrentHealth()
-{
-    return this->current_health;
-}
-
-int Entity::getMaxHealth()
-{
-    return this->max_health;
-}
-
-Direction Entity::getLookingAt()
-{
-    return this->looking_at;
-}
-
-float Entity::getSpeed()
-{
-    return this->speed;
-}
-
-bool Entity::getIsAlive()
-{
-    return this->isAlive;
-}
-
-void Entity::setMaxHealth(int health)
-{
-    this->max_health = health;
-}
-
-void Entity::setCurrentHealth(int health)
-{
-    this->current_health = health;
-}
-
-void Entity::setLookingAt(Direction direction)
-{
-    this->looking_at = direction;
-}
-
-void Entity::setSpeed(float speed)
-{
-    this->speed = speed;
-}
-
-void Entity::setIsAlive(bool isAlive)
-{
-    this->isAlive = isAlive;
-}

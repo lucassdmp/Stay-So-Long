@@ -21,6 +21,7 @@ public:
   void move();
   void draw();
 
+  void setDirection(glm::vec2 value) { this->direction = value; }
   void setOutOfBoundsTimer(float value) { this->outOfBoundsTimer = value; }
 
   void setDirectionAndInitialPosition(glm::vec2 playerPos);
@@ -28,5 +29,6 @@ public:
   void generateVertices();
   std::vector<glm::vec2> getVertices() { return vertices; }
 
+  glm::vec2 getDirection() { return direction; }
   float getOutOfBoundsTimer() { return outOfBoundsTimer; }
 };
