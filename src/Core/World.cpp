@@ -9,18 +9,23 @@ World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
 
   asteroidTimerMax = 10.0f;
   asteroidTimer = 0.0f;
+
+  enemyTimerMax = 15.0f;
+  enemyTimer = 0.0f;
 }
 
 World::~World()
 {
   delete player;
   asteroids.clear();
+  enemies.clear();
 }
 
 void World::Update()
 {
-  handleAsteroids();
   player->fixedUpdate(*dt, *window);
+  handleAsteroids();
+  handleEnemies();
 }
 
 void World::handleAsteroids()
@@ -82,4 +87,64 @@ void World::handleAsteroids()
   }
 }
 
+void World::handleEnemies()
+{
+    // spawn enemies
+  enemyTimer += 0.1f;
+  if (enemyTimer >= enemyTimerMax)
+  {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0.0f, 1.0f);
+
+    enemies.push_back(Enemy(generateRandomPositionOutsideWindow(*window), glm::vec2(40.0f, 40.0f), sf::Color::Red));
+
+    enemyTimer = 0.0f;
+  }
+
+  for (auto &enemy : enemies)
+  {
+    enemy.fixedUpdate(player->getPos());
+
+    if (checkCollision(*player, enemy))
+    {
+      player->takeDamage(10);
+      enemy.takeDamage(10);
+    }
+
+    for (auto &targetEnemy : enemies)
+    {
+      if (&enemy != &targetEnemy)
+      {
+        if (checkCollision(enemy, targetEnemy))
+        {
+          float distance = glm::distance(enemy.getPos(), targetEnemy.getPos());
+
+          float overlap = 0.1f * (distance - enemy.getSize().x / 2 - targetEnemy.getSize().x / 2);
+
+          glm::vec2 direction = glm::normalize(enemy.getPos() - targetEnemy.getPos());
+
+          enemy.setPos(overlap * direction + enemy.getPos());
+          targetEnemy.setPos(overlap * -direction + targetEnemy.getPos());
+        }
+      }
+    }
+  }
+
+  if (enemies.size() > 0)
+  {
+    auto i = std::remove_if(enemies.begin(), enemies.end(), [&](Enemy &enemy) {
+      if (!enemy.getIsAlive())
+        return true;
+
+      return false;
+    });
+
+    if (i != enemies.end())
+      enemies.erase(i);
+  }
+}
+
+Player *World::player;
 std::vector<Asteroid> World::asteroids;
+std::vector<Enemy> World::enemies;

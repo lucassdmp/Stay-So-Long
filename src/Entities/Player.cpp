@@ -122,6 +122,15 @@ void Player::handleShots(sf::RenderWindow &window)
             projectile.setPos(glm::vec2(-100.0f, -100.0f));
         }
     }
+
+    for (auto &enemy : World::enemies)
+    {
+        if (checkCollision(projectile, enemy))
+        {
+            enemy.takeDamage(2);
+            projectile.setPos(glm::vec2(-100.0f, -100.0f));
+        }
+    }
   }
   
   if (projectiles.size() > 0)
