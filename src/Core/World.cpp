@@ -3,7 +3,9 @@
 
 World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
 {
-  player = new Player(100, 100, 10.0f, glm::vec2(window.getSize().x / 2, window.getSize().y / 2), glm::vec2(20.0f, 20.0f), sf::Color::White);
+  glm::vec2 initialPlayerPos = glm::vec2(window.getSize().x / 2, window.getSize().y / 2);
+  glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
+  player = new Player(100, 100, 10.0f, initialPlayerPos, playerSize, sf::Color::White);
 
   asteroidTimerMax = 10.0f;
   asteroidTimer = 0.0f;
@@ -31,10 +33,8 @@ void World::handleAsteroids()
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0.0f, 1.0f);
 
-    int numAsteroids = std::round(dis(gen)) * 3 + 1;
     float size = dis(gen) * 20.0f + 30.0f;
-    for (int i = 0; i < 1; i++)
-      asteroids.push_back(Asteroid(player->getPos(), glm::vec2(size, size)));
+    asteroids.push_back(Asteroid(player->getPos(), glm::vec2(size, size)));
 
     asteroidTimer = 0.0f;
   }
@@ -68,7 +68,7 @@ void World::handleAsteroids()
       if (asteroid.getOutOfBoundsTimer() > 1.0f)
         return true;
 
-      if (checkCollision(*player, asteroid))
+      if (checkCollision(*player, asteroid) && player->getIsAlive())
       {
         player->takeDamage(10);
         return true;

@@ -17,20 +17,20 @@ Game::Game()
 
   this->world = new World(this->dt, *this->window);
 
-  glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  glViewport(0, 0, window->getSize().x, window->getSize().y);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 1);
+  glOrtho(0, window->getSize().x, window->getSize().y, 0, -1, 1);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   window->setFramerateLimit(60);
 
   background_texture = new sf::Texture();
-  if (!background_texture->loadFromFile("../src/Assets/background1.png"))
+  if (!background_texture->loadFromFile("../src/Assets/Backgrounds/Purple_01.png"))
     std::cout << "Error loading background texture" << std::endl;
 
   this->background.setTexture(*background_texture);
-  this->background.setScale(SCREEN_WIDTH / background_texture->getSize().x, SCREEN_HEIGHT / background_texture->getSize().y);
+  //this->background.setScale(window->getSize().x, window->getSize().y);
 }
 
 Game::~Game()

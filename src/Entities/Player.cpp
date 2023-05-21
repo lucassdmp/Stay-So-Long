@@ -231,27 +231,19 @@ void Player::draw(float dt, sf::RenderWindow &window)
 
 void Player::drawHealthBar()
 {   
-    glColor3f(0.5f, 0.5f, 0.5f);
+    glColor3f(0.77f, 0.31f, 0.31f);
     glPushMatrix();
-    glTranslatef(Game::window->getSize().x / 2, Game::window->getSize().y - HEALTH_BAR_HEIGHT, 0.0f);
+    glTranslatef(Game::window->getSize().x / 2, Game::window->getSize().y - HEALTH_BAR_HEIGHT - 10.0f, 0.0f);
     glScalef(this->getMaxHealth(), HEALTH_BAR_HEIGHT, 1.0f);
-
     Shapes::Square();
-
     glPopMatrix();
 
-    glColor3f(1.0f, 0.0f, 0.0f);
+    glColor3f(1.0f, 0.42f, 0.42f);
     glPushMatrix();
-    glTranslatef(Game::window->getSize().x / 2, Game::window->getSize().y - HEALTH_BAR_HEIGHT, 0.0f);
+    glTranslatef(Game::window->getSize().x / 2, Game::window->getSize().y - HEALTH_BAR_HEIGHT - 10.0f, 0.0f);
     glScalef(this->getCurrentHealth(), HEALTH_BAR_HEIGHT, 1.0f);
 
     Shapes::Square();
 
     glPopMatrix();
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glPointSize(5.0f);
-    glBegin(GL_POINTS);
-        glVertex2f(Game::window->getSize().x / 2, Game::window->getSize().y - HEALTH_BAR_HEIGHT);
-    glEnd();
 }
