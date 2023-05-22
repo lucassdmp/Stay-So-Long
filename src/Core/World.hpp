@@ -26,8 +26,9 @@ public:
 
   void handleAsteroids();
   void handleEnemies();
-  
+
   static Player *player;
   static std::vector<Asteroid> asteroids;
   static std::vector<Enemy> enemies;
+  static int score;
 };

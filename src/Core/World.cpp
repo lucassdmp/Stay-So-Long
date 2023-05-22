@@ -1,5 +1,6 @@
 #include "World.hpp"
 #include "../Util/functions.hpp"
+#include "Game.hpp"
 
 World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
 {
@@ -23,9 +24,25 @@ World::~World()
 
 void World::Update()
 {
-  player->fixedUpdate(*dt, *window);
+  Game::text.setString("Score: " + std::to_string(score));
+  
   handleAsteroids();
   handleEnemies();
+  player->fixedUpdate(*dt, *window);
+}
+
+void World::Render()
+{
+  for (auto &asteroid : asteroids)
+    asteroid.draw();
+
+  for (auto &enemy : enemies)
+    enemy.draw();
+
+  for (auto &projectile : player->getProjectiles())
+    projectile.draw();
+
+  player->draw(*dt, *window);
 }
 
 void World::handleAsteroids()
@@ -83,7 +100,10 @@ void World::handleAsteroids()
     });
 
     if (i != asteroids.end())
+    {
+      score += 10;
       asteroids.erase(i);
+    }
   }
 }
 
@@ -106,7 +126,7 @@ void World::handleEnemies()
   {
     enemy.fixedUpdate(player->getPos());
 
-    if (checkCollision(*player, enemy))
+    if (checkCollision(*player, enemy) && player->getIsAlive())
     {
       player->takeDamage(10);
       enemy.takeDamage(10);
@@ -134,17 +154,21 @@ void World::handleEnemies()
   if (enemies.size() > 0)
   {
     auto i = std::remove_if(enemies.begin(), enemies.end(), [&](Enemy &enemy) {
-      if (!enemy.getIsAlive())
+      if (!enemy.getIsAlive() && player->getIsAlive())
         return true;
 
       return false;
     });
 
     if (i != enemies.end())
+    {
+      score += 10;
       enemies.erase(i);
+    }
   }
 }
 
 Player *World::player;
 std::vector<Asteroid> World::asteroids;
 std::vector<Enemy> World::enemies;
+int World::score = 0;
