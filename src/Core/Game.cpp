@@ -31,6 +31,15 @@ Game::Game()
 
   this->background.setTexture(*background_texture);
   //this->background.setScale(window->getSize().x, window->getSize().y);
+
+  font = new sf::Font();
+  if (!font->loadFromFile("../src/Assets/Fonts/roboto.ttf"))
+    std::cout << "Error loading font" << std::endl;
+
+  text.setFont(*font);
+  text.setCharacterSize(24);
+  text.setFillColor(sf::Color::White);
+  text.setPosition(15, 15);
 }
 
 Game::~Game()
@@ -49,6 +58,12 @@ void Game::Run()
       this->HandleInput();
     }
 
+    if (Input::get_key(sf::Keyboard::P))
+    {
+      isPaused = !isPaused;
+      Input::set_key(sf::Keyboard::P, false);
+    }
+
     this->dt = this->clock.restart().asSeconds();
     this->Render();
   }
@@ -62,11 +77,15 @@ void Game::Render()
   this->window->pushGLStates();
 
   this->window->draw(this->background);
+  this->window->draw(text);
 
   this->window->popGLStates();
 
   // OpenGL
-  this->world->Update();
+  if (!isPaused)
+    this->world->Update();
+  else
+    this->world->Render();
 
   this->window->display();
 }
@@ -100,3 +119,4 @@ void Game::HandleInput()
 sf::RenderWindow *Game::window = nullptr;
 World *Game::world = nullptr;
 float Game::dt = 0.0f;
+sf::Text Game::text;

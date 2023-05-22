@@ -31,31 +31,7 @@ void Asteroid::move()
 
 void Asteroid::setDirectionAndInitialPosition(glm::vec2 playerPos)
 {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<> dis(0.0f, 1.0f);
-
-  glm::vec2 asteroidInitialPos;
-  if (std::round(dis(gen)) == 0)
-  {
-    // choose a random y between 0 and window->getSize().y
-    float y = dis(gen) * Game::window->getSize().y;
-
-    // pick 0 or window->getSize().x
-    float x = std::round(dis(gen)) == 0 ? 0 : Game::window->getSize().x;
-
-    asteroidInitialPos = glm::vec2(x, y);
-  }
-  else
-  {
-    // choose a random x between 0 and window->getSize().x
-    float x = dis(gen) * Game::window->getSize().x;
-
-    // pick 0 or window->getSize().y
-    float y = std::round(dis(gen)) == 0 ? 0 : Game::window->getSize().y;
-
-    asteroidInitialPos = glm::vec2(x, y);
-  }
+  glm::vec2 asteroidInitialPos = generateRandomPositionOutsideWindow(*Game::window);
   // direction is a vector from the asteroid to the last position of the player
   direction = playerPos - asteroidInitialPos;
   direction = glm::normalize(direction);

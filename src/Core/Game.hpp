@@ -12,7 +12,9 @@ private:
   sf::Clock clock;
   sf::Texture *background_texture;
   sf::Sprite background;
+  sf::Font *font;
 
+  bool isPaused;
 
 public:
   Game();
@@ -26,4 +28,5 @@ public:
   static sf::RenderWindow *window;
   static World *world;
   static float dt;
+  static sf::Text text;
 };

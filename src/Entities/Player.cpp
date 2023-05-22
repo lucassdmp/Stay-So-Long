@@ -44,7 +44,6 @@ void Player::fixedUpdate(float dt, sf::RenderWindow &window)
     this->update();
     this->handleShots(window);
     this->draw(dt, window);
-    this->drawHealthBar();
 }
 
 void Player::move(float dt)
@@ -122,6 +121,15 @@ void Player::handleShots(sf::RenderWindow &window)
             projectile.setPos(glm::vec2(-100.0f, -100.0f));
         }
     }
+
+    for (auto &enemy : World::enemies)
+    {
+        if (checkCollision(projectile, enemy))
+        {
+            enemy.takeDamage(2);
+            projectile.setPos(glm::vec2(-100.0f, -100.0f));
+        }
+    }
   }
   
   if (projectiles.size() > 0)
@@ -172,13 +180,7 @@ void Player::checkBounds(sf::RenderWindow &window)
 
 void Player::draw(float dt, sf::RenderWindow &window)
 {
-    /* // draw the player's collision circle for debugging
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glPushMatrix();
-        glTranslatef(pos.x, pos.y, 0.0f);
-        glScalef(size.x, size.y, 1.0f);
-        Shapes::Circle(1, 16, false);
-    glPopMatrix(); */
+    drawHealthBar();
 
     glColor3f(this->color.r, this->color.g, this->color.b);
     glPushMatrix();
@@ -220,6 +222,14 @@ void Player::draw(float dt, sf::RenderWindow &window)
         glEnd();
 
     glPopMatrix();
+
+        /* // draw the player's collision circle for debugging
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glPushMatrix();
+        glTranslatef(pos.x, pos.y, 0.0f);
+        glScalef(size.x, size.y, 1.0f);
+        Shapes::Circle(1, 16, false);
+    glPopMatrix(); */
 
 /*  // draw the player's center position for debugging
     glColor3f(1.0f, 0.0f, 0.0f);

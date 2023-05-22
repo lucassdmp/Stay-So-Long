@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "../Entities/Player.hpp"
 #include "../Entities/Asteroid.hpp"
+#include "../Entities/Enemy.hpp"
 #include <iostream>
 #include <vector>
 
@@ -11,9 +12,10 @@ class World
 private:
   float *dt;
   sf::RenderWindow *window;
-  Player *player;
   float asteroidTimer;
   float asteroidTimerMax;
+  float enemyTimer;
+  float enemyTimerMax;
 
 public:
   World(float &dt, sf::RenderWindow &window);
@@ -23,6 +25,10 @@ public:
   void Render();
 
   void handleAsteroids();
-  
+  void handleEnemies();
+
+  static Player *player;
   static std::vector<Asteroid> asteroids;
+  static std::vector<Enemy> enemies;
+  static int score;
 };

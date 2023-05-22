@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <GL/gl.h>
+#include <random>
 
 float wave(float time, float from, float to, float duration) {
     float amplitude = (to - from) / 2.0f;
@@ -22,8 +23,8 @@ bool checkCollision(GameObject &obj1, GameObject &obj2)
 
     float distance = length - radius_sum;
     
-    /* draw collision line distance between objects
-    if (distance < radius_sum)
+    // draw collision line distance between objects
+    /* if (distance < radius_sum)
         glColor3f(1.0f, 0.0f, 0.0f);
     else
         glColor3f(0.0f, 1.0f, 0.0f);
@@ -40,4 +41,35 @@ bool isOutOfBounds(GameObject &obj, sf::RenderWindow &window)
 {
     return obj.getPos().x < 0 || obj.getPos().x > window.getSize().x ||
            obj.getPos().y < 0 || obj.getPos().y > window.getSize().y;
+}
+
+glm::vec2 generateRandomPositionOutsideWindow(sf::RenderWindow &window)
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(0.0f, 1.0f);
+
+  glm::vec2 pos;
+  if (std::round(dis(gen)) == 0)
+  {
+    // choose a random y between 0 and window.getSize().y
+    float y = dis(gen) * window.getSize().y;
+
+    // pick 0 or window.getSize().x
+    float x = std::round(dis(gen)) == 0 ? 0 : window.getSize().x;
+
+    pos = glm::vec2(x, y);
+  }
+  else
+  {
+    // choose a random x between 0 and window.getSize().x
+    float x = dis(gen) * window.getSize().x;
+
+    // pick 0 or window.getSize().y
+    float y = std::round(dis(gen)) == 0 ? 0 : window.getSize().y;
+
+    pos = glm::vec2(x, y);
+  }
+
+  return pos;
 }
