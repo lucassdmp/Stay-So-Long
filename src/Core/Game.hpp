@@ -4,6 +4,7 @@
 #include "../Entities/Player.hpp"
 #include "../Entities/Asteroid.hpp"
 #include "World.hpp"
+#include <map>
 
 class Game
 {
@@ -28,5 +29,5 @@ public:
   static sf::RenderWindow *window;
   static World *world;
   static float dt;
-  static sf::Text text;
+  static std::map<std::string, sf::Text> texts;
 };

@@ -24,7 +24,7 @@ World::~World()
 
 void World::Update()
 {
-  Game::text.setString("Score: " + std::to_string(score));
+  Game::texts["score"].setString("Score: " + std::to_string(score));
   
   handleAsteroids();
   handleEnemies();

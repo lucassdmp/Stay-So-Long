@@ -9,7 +9,7 @@
 class Projectile : public GameObject{
 public:
     Projectile();
-    Projectile(glm::vec2 direction, glm::vec2 pos, glm::vec2 size, sf::Color color);
+    Projectile(glm::vec2 direction, float speed, glm::vec2 pos, glm::vec2 size, sf::Color color);
     virtual ~Projectile();
     void draw();
     void update();
@@ -17,4 +17,5 @@ public:
     glm::vec2 getDirection();
 private:
     glm::vec2 direction;
+    float speed;
 };
