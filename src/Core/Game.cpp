@@ -36,10 +36,20 @@ Game::Game()
   if (!font->loadFromFile("../src/Assets/Fonts/roboto.ttf"))
     std::cout << "Error loading font" << std::endl;
 
-  text.setFont(*font);
-  text.setCharacterSize(24);
-  text.setFillColor(sf::Color::White);
-  text.setPosition(15, 15);
+
+
+  texts.insert(std::pair<std::string, sf::Text>("score", sf::Text()));
+  texts.insert(std::pair<std::string, sf::Text>("level", sf::Text()));
+
+  for (auto &text : texts)
+  {
+    text.second.setFont(*font);
+    text.second.setCharacterSize(24);
+    text.second.setFillColor(sf::Color::White);
+  }
+
+  texts["score"].setPosition(15, 15);
+  texts["level"].setPosition(15, 45);
 }
 
 Game::~Game()
@@ -47,6 +57,7 @@ Game::~Game()
   delete this->window;
   delete this->world;
   delete this->background_texture;
+  delete this->font;
 }
 
 void Game::Run()
@@ -77,7 +88,8 @@ void Game::Render()
   this->window->pushGLStates();
 
   this->window->draw(this->background);
-  this->window->draw(text);
+  for (auto &text : texts)
+    this->window->draw(text.second);
 
   this->window->popGLStates();
 
@@ -119,4 +131,4 @@ void Game::HandleInput()
 sf::RenderWindow *Game::window = nullptr;
 World *Game::world = nullptr;
 float Game::dt = 0.0f;
-sf::Text Game::text;
+std::map<std::string, sf::Text> Game::texts;

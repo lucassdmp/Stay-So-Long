@@ -22,28 +22,24 @@ void Player::fixedUpdate(float dt, sf::RenderWindow &window)
     lookDir = glm::normalize(lookDir);
     angle = (atan2(lookDir.y, lookDir.x) * 180 / M_PI) - 90.0f;
 
-    float moveX = 0.0f;
-    float moveY = 0.0f;
-
-    if (Input::get_key(sf::Keyboard::W))
-        moveY = -1.0f;
-    if (Input::get_key(sf::Keyboard::S))
-        moveY = 1.0f;
-    if (Input::get_key(sf::Keyboard::A))
-        moveX = -1.0f;
-    if (Input::get_key(sf::Keyboard::D))
-        moveX = 1.0f;
-
-    moveDir = glm::vec2(moveX, moveY);
-    // normalize the moveDir so that the player doesn't move faster diagonally
-    if (glm::length(moveDir) > 0.0f)
-        moveDir = glm::normalize(moveDir);
+    handleUpgrades();
 
     this->move(dt);
     this->checkBounds(window);
     this->update();
     this->handleShots(window);
     this->draw(dt, window);
+}
+
+void Player::handleUpgrades()
+{
+    if (World::score >= this->level_up_score_step * this->current_level && this->current_level < this->max_level)
+    {
+        this->current_level++;
+        shot_cooldown = shot_cooldown / (this->current_level * 0.5f);
+    }
+    Game::texts["level"].setString("Level: " + std::to_string(this->current_level));
+
 }
 
 void Player::move(float dt)
@@ -151,18 +147,34 @@ void Player::shoot()
   this->shot_timer = 0.0f;
 
   glm::vec2 direction = glm::vec2(Input::mouse_pos.x - this->pos.x, Input::mouse_pos.y - this->pos.y);
+  direction = glm::normalize(direction);
 
-  // normalize direction
-  float length = sqrt(pow(direction.x, 2) + pow(direction.y, 2));
-  direction.x /= length;
-  direction.y /= length;
-  direction *= 10.0f; // speed
+  std::vector<Projectile> new_projectiles;
 
-  glm::vec2 bullet_start_pos = this->pos;
+  switch (current_level)
+  {
+    case 1:
+        new_projectiles.push_back(Projectile(direction, 10.0f, this->pos, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
+        break;
+    default:
+        float offsetX = 15.0f;
+        float offsetY = 10.0f;
+        glm::mat4 rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
 
-  Projectile projectile = Projectile(direction, bullet_start_pos, glm::vec2(10.0f, 10.0f), sf::Color::White);
+        glm::vec4 projPos1 = glm::vec4(offsetX, offsetY, 0.0f, 1.0f);
+        glm::vec4 projPos2 = glm::vec4(-offsetX, offsetY, 0.0f, 1.0f);
+        projPos1 = rotationMat * projPos1;
+        projPos2 = rotationMat * projPos2;
 
-  this->projectiles.push_back(projectile);
+        glm::vec2 finalPosition1 = pos + glm::vec2(projPos1);
+        glm::vec2 finalPosition2 = pos + glm::vec2(projPos2);
+
+        new_projectiles.push_back(Projectile(direction, 10.0f, finalPosition1, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
+        new_projectiles.push_back(Projectile(direction, 10.0f, finalPosition2, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
+        break;
+  }
+
+  projectiles.insert(projectiles.end(), new_projectiles.begin(), new_projectiles.end());
 }
 
 void Player::checkBounds(sf::RenderWindow &window)

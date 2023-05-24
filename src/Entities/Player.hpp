@@ -20,8 +20,12 @@ public:
     void move(float dt);
     void checkBounds(sf::RenderWindow &window);
     void drawHealthBar();
+    void handleUpgrades();
 
     std::vector<Projectile> getProjectiles() { return projectiles; }
+
+    void setLevel(int level) { this->current_level = level; }
+    int getLevel() { return this->current_level; }
 
 private:
     float angle = 0.0f;
@@ -35,5 +39,8 @@ private:
     float deceleration = 1.0f;
     float current_speed = 0.0f;
     glm::vec2 velocity;
-    glm::vec2 moveDir;
+
+    int current_level = 1;
+    int max_level = 3;
+    int level_up_score_step = 50;
 };
