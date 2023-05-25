@@ -1,7 +1,9 @@
 #include "Enemy.hpp"
+#include <iostream>
 
 Enemy::Enemy(glm::vec2 pos, glm::vec2 size, sf::Color color) : Entity(5, 5, 2.0f, pos, size, color)
 {
+  this->type = static_cast<EnemyType>(rand() % 2);
 }
 
 Enemy::~Enemy()
@@ -11,50 +13,129 @@ Enemy::~Enemy()
 void Enemy::fixedUpdate(glm::vec2 playerPos)
 {
     // follow the player
-  glm::vec2 dir = playerPos - this->pos;
-  dir = glm::normalize(dir);
+  lookDir = playerPos - this->pos;
+  lookDir = glm::normalize(lookDir);
 
-  rotationAngle = (std::atan2(dir.y, dir.x) * 180.0f / M_PI) - 90.0f;
+  rotationAngle = (std::atan2(lookDir.y, lookDir.x) * 180.0f / M_PI) - 90.0f;
 
-  this->pos += dir * this->getSpeed();
-  
+  handleEnemyTypes(playerPos);
+
   update();
   draw();
 }
 
+void Enemy::handleEnemyTypes(glm::vec2 playerPos)
+{
+  switch(type)
+  {
+    case EnemyType::FOLLOWER:
+      this->pos += lookDir * this->getSpeed();
+      break;
+
+    case EnemyType::CHARGER:
+      handleCharger();
+      break;
+
+    case EnemyType::SHOOTER:
+      break;
+  }
+}
+
+void Enemy::handleCharger()
+{
+  if (!isCharging && !isSprinting)
+  {
+    // the enemy moves normally towards the player
+    this->pos += lookDir * this->getSpeed();
+
+    // if the enemy has been moving towards the player for a certain amount of time, it will charge
+    chargeTimer += 0.1f;
+    if (chargeTimer >= chargeDuration) 
+    {
+      isCharging = true;
+      chargeTimer = 0.0f;
+    }
+  }
+
+  if (isCharging)
+  {
+    // the enemy will stop and charge for a certain amount of time
+    this->pos += 0.0f;
+    // the enemy will charge in the direction it was moving towards the player
+    chargingTimer += 0.1f;
+    if (chargingTimer >= chargingDuration)
+    {
+      // the enemy will stop charging and sprint in the direction it was charging
+      sprintDir = lookDir;
+      isSprinting = true;
+      isCharging = false;
+      chargingTimer = 0.0f;
+    }
+  }
+
+  if (isSprinting)
+  {
+    // the enemy will sprint in the direction it was charging
+    this->pos += sprintDir * this->getSpeed() * 5.0f;
+    // the enemy will sprint for a certain amount of time before returning to normal
+    sprintTimer += 0.1f;
+    if (sprintTimer >= sprintDuration)
+    {
+      isSprinting = false;
+      sprintTimer = 0.0f;
+      chargeTimer = 0.0f;
+    }
+  }
+}
+
 void Enemy::draw()
 {
-  glPushMatrix();
   glColor3f(color.r, color.g, color.b);
+
+  glPushMatrix();
   glTranslatef(pos.x, pos.y, 0.0f);
   glRotatef(rotationAngle, 0, 0, 1);
   glScalef(size.x, size.y, 1.0f);
 
-  glBegin(GL_QUADS);
-    glVertex2f( 0.0f,  0.5f);
-    glVertex2f( 0.5f,  0.0f);
-    glVertex2f( 0.0f,  -0.5f);
-    glVertex2f(-0.5f,  0.0f);
-  glEnd();
+  switch(type)
+  {
+    case EnemyType::FOLLOWER:
+      glBegin(GL_QUADS);
+        glVertex2f( 0.0f,  0.5f);
+        glVertex2f( 0.5f,  0.0f);
+        glVertex2f( 0.0f,  -0.5f);
+        glVertex2f(-0.5f,  0.0f);
+      glEnd();
 
-  // right wing
-  glBegin(GL_TRIANGLES);
-    glVertex2f( 0.5f, -0.5f);
-    glVertex2f( 0.9f, -0.5f);
-    glVertex2f( 0.5f,  0.7f);
-  glEnd();
+      // right wing
+      glBegin(GL_TRIANGLES);
+        glVertex2f( 0.5f, -0.5f);
+        glVertex2f( 0.9f, -0.5f);
+        glVertex2f( 0.5f,  0.7f);
+      glEnd();
 
-  // left wing
-  glBegin(GL_TRIANGLES);
-    glVertex2f(-0.5f, -0.5f);
-    glVertex2f(-0.9f, -0.5f);
-    glVertex2f(-0.5f,  0.7f);
-  glEnd();
+      // left wing
+      glBegin(GL_TRIANGLES);
+        glVertex2f(-0.5f, -0.5f);
+        glVertex2f(-0.9f, -0.5f);
+        glVertex2f(-0.5f,  0.7f);
+      glEnd();
+      break;
+
+    case EnemyType::CHARGER:
+      glBegin(GL_TRIANGLES);
+        glVertex2f( 0.0f,  1.0f);
+        glVertex2f( 0.5f, -0.5f);
+        glVertex2f(-0.5f, -0.5f);
+      glEnd();
+      break;
+  }
+
 
   glPopMatrix();
 
     // draw the enemy's hitbox
-  /* glColor3f(1.0f, 0.0f, 0.0f);
+  glColor3f(1.0f, 0.0f, 0.0f);
   glPushMatrix();
     glTranslatef(pos.x, pos.y, 0.0f);
     glScalef(size.x, size.y, 1.0f);
@@ -66,5 +147,5 @@ void Enemy::draw()
   glPointSize(5.0f);
   glBegin(GL_POINTS);
     glVertex2f(pos.x, pos.y);
-  glEnd(); */
+  glEnd();
 }
