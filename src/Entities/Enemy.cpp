@@ -1,30 +1,35 @@
 #include "Enemy.hpp"
 #include <iostream>
+#include "../Util/functions.hpp"
+#include "../Core/Game.hpp"
+#include "../Core/World.hpp"
 
 Enemy::Enemy(glm::vec2 pos, glm::vec2 size, sf::Color color) : Entity(5, 5, 2.0f, pos, size, color)
 {
-  this->type = static_cast<EnemyType>(rand() % 2);
+  srand(time(NULL));
+  this->type = static_cast<EnemyType>(rand() % 3);
 }
 
 Enemy::~Enemy()
 {
+  bullets.clear();
 }
 
-void Enemy::fixedUpdate(glm::vec2 playerPos)
+void Enemy::fixedUpdate()
 {
-    // follow the player
-  lookDir = playerPos - this->pos;
+  // look at the player
+  lookDir = World::player->getPos() - this->pos;
   lookDir = glm::normalize(lookDir);
 
   rotationAngle = (std::atan2(lookDir.y, lookDir.x) * 180.0f / M_PI) - 90.0f;
 
-  handleEnemyTypes(playerPos);
+  handleEnemyTypes();
 
   update();
   draw();
 }
 
-void Enemy::handleEnemyTypes(glm::vec2 playerPos)
+void Enemy::handleEnemyTypes()
 {
   switch(type)
   {
@@ -37,6 +42,7 @@ void Enemy::handleEnemyTypes(glm::vec2 playerPos)
       break;
 
     case EnemyType::SHOOTER:
+      handleShooter();
       break;
   }
 }
@@ -88,6 +94,52 @@ void Enemy::handleCharger()
   }
 }
 
+void Enemy::handleShooter()
+{
+  this->pos += lookDir * this->getSpeed() / 2.0f;
+
+  shootCooldown += 0.1f;
+  if (shootCooldown >= shootCooldownDuration)
+  {
+    // the enemy will shoot a bullet in the direction of the player
+    glm::vec2 bulletDir = World::player->getPos() - this->pos;
+    bulletDir = glm::normalize(bulletDir);
+
+    Projectile projectile = Projectile(bulletDir, bulletSpeed, this->pos, glm::vec2(20.0f, 20.0f), sf::Color::Red);
+    
+    bullets.push_back(projectile);
+    shootCooldown = 0.0f;
+  }
+
+  for (auto &bullet : bullets)
+  {
+    bullet.update();
+
+    if (checkCollision(bullet, *World::player))
+    {
+      World::player->takeDamage(bulletDamage);
+      bullet.setPos(glm::vec2(-100.0f, -100.0f));
+    }
+  }
+
+  if (bullets.size() > 0)
+  {
+    auto i = std::remove_if(bullets.begin(), bullets.end(), [&](Projectile &bullet) {
+      if (isOutOfBounds(bullet, *Game::window))
+      {
+        return true;
+      }
+
+      return false;
+    });
+
+    if (i != bullets.end())
+    {
+      bullets.erase(i);
+    }
+  }
+}
+
 void Enemy::draw()
 {
   glColor3f(color.r, color.g, color.b);
@@ -100,6 +152,23 @@ void Enemy::draw()
   switch(type)
   {
     case EnemyType::FOLLOWER:
+      glBegin(GL_QUADS);
+        glVertex2f( 0.0f,  0.9f);
+        glVertex2f( 0.9f,  0.0f);
+        glVertex2f( 0.0f,  -0.9f);
+        glVertex2f(-0.9f,  0.0f);
+      glEnd();
+      break;
+
+    case EnemyType::CHARGER:
+      glBegin(GL_TRIANGLES);
+        glVertex2f( 0.0f,  1.0f);
+        glVertex2f( 0.5f, -0.5f);
+        glVertex2f(-0.5f, -0.5f);
+      glEnd();
+      break;
+
+    case EnemyType::SHOOTER:
       glBegin(GL_QUADS);
         glVertex2f( 0.0f,  0.5f);
         glVertex2f( 0.5f,  0.0f);
@@ -121,21 +190,12 @@ void Enemy::draw()
         glVertex2f(-0.5f,  0.7f);
       glEnd();
       break;
-
-    case EnemyType::CHARGER:
-      glBegin(GL_TRIANGLES);
-        glVertex2f( 0.0f,  1.0f);
-        glVertex2f( 0.5f, -0.5f);
-        glVertex2f(-0.5f, -0.5f);
-      glEnd();
-      break;
   }
-
 
   glPopMatrix();
 
     // draw the enemy's hitbox
-  glColor3f(1.0f, 0.0f, 0.0f);
+/*   glColor3f(1.0f, 0.0f, 0.0f);
   glPushMatrix();
     glTranslatef(pos.x, pos.y, 0.0f);
     glScalef(size.x, size.y, 1.0f);
@@ -147,5 +207,5 @@ void Enemy::draw()
   glPointSize(5.0f);
   glBegin(GL_POINTS);
     glVertex2f(pos.x, pos.y);
-  glEnd();
+  glEnd(); */
 }
