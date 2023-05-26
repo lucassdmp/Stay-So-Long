@@ -12,7 +12,7 @@ Game::Game()
 {
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
   this->window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stay So Long");
-  this->window->setPosition(sf::Vector2i((desktop.width / 2) - (SCREEN_WIDTH / 2), (desktop.height / 2) - (SCREEN_HEIGHT / 2)));
+  this->window->setPosition(sf::Vector2i((desktop.width / 2) - (desktop.width / 2), (desktop.height / 2) - (desktop.height / 2)));
   this->window->setMouseCursorVisible(false);
 
   this->world = new World(this->dt, *this->window);
@@ -30,14 +30,14 @@ Game::Game()
     std::cout << "Error loading background texture" << std::endl;
 
   this->background.setTexture(*background_texture);
-  //this->background.setScale(window->getSize().x, window->getSize().y);
+  float scaleX = (float)window->getSize().x / (float)background_texture->getSize().x;
+  float scaleY = (float)window->getSize().y / (float)background_texture->getSize().y;
+  this->background.setScale(scaleX, scaleY);
 
   font = new sf::Font();
   if (!font->loadFromFile("../src/Assets/Fonts/roboto.ttf"))
     std::cout << "Error loading font" << std::endl;
-
-
-
+    
   texts.insert(std::pair<std::string, sf::Text>("score", sf::Text()));
   texts.insert(std::pair<std::string, sf::Text>("level", sf::Text()));
 

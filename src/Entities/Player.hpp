@@ -34,7 +34,7 @@ private:
     glm::vec2 lookDir;
     std::vector<Projectile> projectiles;
     
-    float max_speed = 200.0f;
+    float max_speed = 300.0f;
     float acceleration = 10.0f;
     float deceleration = 1.0f;
     float current_speed = 0.0f;

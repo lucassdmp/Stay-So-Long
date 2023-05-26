@@ -8,10 +8,10 @@ World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
   glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
   player = new Player(100, 100, 10.0f, initialPlayerPos, playerSize, sf::Color::White);
 
-  asteroidTimerMax = 10.0f;
+  asteroidTimerMax = 30.0f;
   asteroidTimer = 0.0f;
 
-  enemyTimerMax = 15.0f;
+  enemyTimerMax = 20.0f;
   enemyTimer = 0.0f;
 }
 
@@ -124,7 +124,7 @@ void World::handleEnemies()
 
   for (auto &enemy : enemies)
   {
-    enemy.fixedUpdate(player->getPos());
+    enemy.fixedUpdate();
 
     if (checkCollision(*player, enemy) && player->getIsAlive())
     {
