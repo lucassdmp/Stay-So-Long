@@ -15,11 +15,12 @@ public:
 
     void fixedUpdate(float dt, sf::RenderWindow &window);
     void draw(float dt, sf::RenderWindow &window);
+    void drawCrosshair();
+    void drawHealthBar();
     void shoot();
     void handleShots(sf::RenderWindow &window);
     void move(float dt);
     void checkBounds(sf::RenderWindow &window);
-    void drawHealthBar();
     void handleUpgrades();
 
     std::vector<Projectile> getProjectiles() { return projectiles; }

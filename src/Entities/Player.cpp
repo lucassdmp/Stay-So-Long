@@ -193,6 +193,7 @@ void Player::checkBounds(sf::RenderWindow &window)
 void Player::draw(float dt, sf::RenderWindow &window)
 {
     drawHealthBar();
+    drawCrosshair();
 
     glColor3f(this->color.r, this->color.g, this->color.b);
     glPushMatrix();
@@ -249,6 +250,35 @@ void Player::draw(float dt, sf::RenderWindow &window)
     glBegin(GL_POINTS);
         glVertex2f(this->pos.x, this->pos.y);
     glEnd(); */
+}
+
+void Player::drawCrosshair()
+{
+  glColor3f(1.0f, 1.0f, 1.0f);
+  // crosshair circle outline
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glPushMatrix();
+    glTranslatef(Input::mouse_pos.x, Input::mouse_pos.y, 0.0f);
+    Shapes::Circle(16.0f, 10, false);
+  glPopMatrix();
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  // crosshair lines and middle dot
+  for (int i = 0; i < 4; i++)
+  {
+    glPushMatrix();
+      glTranslatef(Input::mouse_pos.x, Input::mouse_pos.y, 0.0f);
+      glRotatef(i * 90.0f, 0.0f, 0.0f, 1.0f);
+      glTranslatef(0.0f, 10.0f, 0.0f);
+      glScalef(1.0f, 5.0f, 1.0f);
+      Shapes::Square();
+    glPopMatrix();
+  }
+  glPushMatrix();
+    glTranslatef(Input::mouse_pos.x, Input::mouse_pos.y, 0.0f);
+    glScalef(1.0f, 1.0f, 1.0f);
+    Shapes::Square();
+  glPopMatrix();
 }
 
 void Player::drawHealthBar()
