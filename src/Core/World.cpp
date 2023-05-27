@@ -5,6 +5,8 @@
 
 World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
 {
+  srand(time(NULL));
+  
   glm::vec2 initialPlayerPos = glm::vec2(window.getSize().x / 2, window.getSize().y / 2);
   glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
   player = new Player(100, 100, 10.0f, initialPlayerPos, playerSize, sf::Color::White);
@@ -79,12 +81,12 @@ void World::handleAsteroids()
   asteroidTimer += 0.1f;
   if (asteroidTimer >= asteroidTimerMax)
   {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0.0f, 1.0f);
-
-    float size = dis(gen) * 20.0f + 30.0f;
-    asteroids.push_back(Asteroid(player->getPos(), glm::vec2(size, size)));
+    int numAsteroids = rand() % 3 + 1;
+    for (int i = 0; i < numAsteroids; i++)
+    {
+      float size = rand() % 20 + 30.0f;
+      asteroids.push_back(Asteroid(player->getPos(), glm::vec2(size, size)));
+    }
 
     asteroidTimer = 0.0f;
   }
@@ -141,12 +143,7 @@ void World::handleEnemies()
   enemyTimer += 0.1f;
   if (enemyTimer >= enemyTimerMax)
   {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0.0f, 1.0f);
-
     enemies.push_back(Enemy(generateRandomPositionOutsideWindow(*window), glm::vec2(40.0f, 40.0f), sf::Color::Red));
-
     enemyTimer = 0.0f;
   }
 

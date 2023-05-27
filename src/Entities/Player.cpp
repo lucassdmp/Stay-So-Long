@@ -105,6 +105,8 @@ void Player::handleShots(sf::RenderWindow &window)
   if (Input::get_mouse_button(sf::Mouse::Left))
     this->shoot();
 
+  std::vector<Asteroid> new_asteroids;
+
   for (auto &projectile : projectiles)
   {
     projectile.update();
@@ -113,6 +115,12 @@ void Player::handleShots(sf::RenderWindow &window)
     {
         if (checkCollision(projectile, asteroid))
         {
+            if (asteroid.getSize().x >= 40.0f)
+            {
+                new_asteroids.push_back(Asteroid(asteroid.getPos(), asteroid.getSize() / 2.0f, asteroid.getDirection()));
+                new_asteroids.push_back(Asteroid(asteroid.getPos(), asteroid.getSize() / 2.0f, asteroid.getDirection()));
+            }
+
             asteroid.setPos(glm::vec2(-100.0f, -100.0f));
             projectile.setPos(glm::vec2(-100.0f, -100.0f));
         }
@@ -136,6 +144,11 @@ void Player::handleShots(sf::RenderWindow &window)
 
     if (i != projectiles.end())
       projectiles.erase(i);
+  }
+
+  if (new_asteroids.size() > 0)
+  {
+    World::asteroids.insert(World::asteroids.end(), new_asteroids.begin(), new_asteroids.end());
   }
 }
 

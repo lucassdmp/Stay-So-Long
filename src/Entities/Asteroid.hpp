@@ -16,6 +16,7 @@ private:
 
 public:
   Asteroid(glm::vec2 playerPos, glm::vec2 size);
+  Asteroid(glm::vec2 pos, glm::vec2 size, glm::vec2 direction);
   virtual ~Asteroid();
 
   void move();

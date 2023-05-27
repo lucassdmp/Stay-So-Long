@@ -8,6 +8,14 @@ Asteroid::Asteroid(glm::vec2 playerPos, glm::vec2 size) : Entity(10, 10, 2.0f, g
   setDirectionAndInitialPosition(playerPos);
 }
 
+Asteroid::Asteroid(glm::vec2 pos, glm::vec2 size, glm::vec2 direction) : Entity(10, 10, 2.0f, pos, size, sf::Color::Red)
+{
+  this->pos = pos;
+  this->direction = direction;
+  this->size = size;
+  generateVertices();
+}
+
 Asteroid::~Asteroid()
 {
 }
