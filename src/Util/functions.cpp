@@ -73,3 +73,19 @@ glm::vec2 generateRandomPositionOutsideWindow(sf::RenderWindow &window)
 
   return pos;
 }
+
+float genRandomNumberInRange(float min, float max)
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(min, max);
+  return dis(gen);
+}
+
+int genRandomNumberInRange(int min, int max)
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(min, max);
+  return dis(gen);
+}

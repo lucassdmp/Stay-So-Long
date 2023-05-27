@@ -11,7 +11,7 @@
 Game::Game()
 {
   sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-  this->window = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stay So Long");
+  this->window = new sf::RenderWindow(sf::VideoMode(desktop.width, desktop.height), "Stay So Long", sf::Style::Fullscreen);
   this->window->setPosition(sf::Vector2i((desktop.width / 2) - (desktop.width / 2), (desktop.height / 2) - (desktop.height / 2)));
   this->window->setMouseCursorVisible(false);
 
@@ -40,6 +40,7 @@ Game::Game()
     
   texts.insert(std::pair<std::string, sf::Text>("score", sf::Text()));
   texts.insert(std::pair<std::string, sf::Text>("level", sf::Text()));
+  texts.insert(std::pair<std::string, sf::Text>("wave", sf::Text()));
 
   for (auto &text : texts)
   {
@@ -50,6 +51,7 @@ Game::Game()
 
   texts["score"].setPosition(15, 15);
   texts["level"].setPosition(15, 45);
+  texts["wave"].setPosition(15, 75);
 }
 
 Game::~Game()

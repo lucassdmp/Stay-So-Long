@@ -25,6 +25,8 @@ public:
   void handleCharger();
   void handleShooter();
 
+  std::vector<Projectile> getBullets() { return bullets; }
+
 private:
   glm::vec2 lookDir;
   float rotationAngle;

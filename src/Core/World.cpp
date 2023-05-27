@@ -1,22 +1,23 @@
 #include "World.hpp"
-#include "../Util/functions.hpp"
 #include "Game.hpp"
+#include "../Util/functions.hpp"
 #include "../Util/Input.hpp"
+#include <sstream>
 
 World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
-{
-  srand(time(NULL));
-  
+{ 
   glm::vec2 initialPlayerPos = glm::vec2(window.getSize().x / 2, window.getSize().y / 2);
   glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
   player = new Player(100, 100, 10.0f, initialPlayerPos, playerSize, sf::Color::White);
-  boss = new Boss(glm::vec2(window.getSize().x / 2, -500.0f), glm::vec2(150.0f, 150.0f), sf::Color::Red);
 
   asteroidTimerMax = 30.0f;
   asteroidTimer = 0.0f;
 
   enemyTimerMax = 20.0f;
   enemyTimer = 0.0f;
+
+  timeBetweenWaves = 10.0f;
+  waveTimer = 0.0f;
 }
 
 World::~World()
@@ -25,6 +26,7 @@ World::~World()
   delete boss;
   asteroids.clear();
   enemies.clear();
+  enemiesToSpawn.clear();
 }
 
 void World::Update()
@@ -35,6 +37,7 @@ void World::Update()
   }
   else
   {
+    handleWaves();
     handleAsteroids();
     handleEnemies();
   }
@@ -46,6 +49,18 @@ void World::Update()
   }
 
   Game::texts["score"].setString("Score: " + std::to_string(score));
+
+  if (waveTimer > 0.0f)
+  {
+    std::ostringstream out;
+    out.precision(2);
+    out << std::fixed << timeBetweenWaves - waveTimer;
+    Game::texts["wave"].setString("Next wave in: " + out.str());
+  }
+  else
+  {
+    Game::texts["wave"].setString("Wave: " + std::to_string(currentWave));
+  }
 
   player->fixedUpdate(*dt, *window);
 }
@@ -64,7 +79,12 @@ void World::Render()
     asteroid.draw();
 
   for (auto &enemy : enemies)
+  {
     enemy.draw();
+
+    for (auto &bullet : enemy.getBullets())
+      bullet.draw();
+  }
 
   for (auto &projectile : player->getProjectiles())
     projectile.draw();
@@ -81,7 +101,6 @@ void World::restartGame()
 
   glm::vec2 initialPlayerPos = glm::vec2(window->getSize().x / 2, window->getSize().y / 2);
   glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
-  boss = new Boss(glm::vec2(window->getSize().x / 2, -500.0f), glm::vec2(150.0f, 150.0f), sf::Color::Red);
   player = new Player(100, 100, 10.0f, initialPlayerPos, playerSize, sf::Color::White);
   player->setVelocity(glm::vec2(0.0f, 0.0f));
   player->setCurrentSpeed(0.0f);
@@ -92,7 +111,11 @@ void World::restartGame()
   enemyTimerMax = 20.0f;
   enemyTimer = 0.0f;
 
+  timeBetweenWaves = 10.0f;
+  waveTimer = 0.0f;
+
   score = 0;
+  currentWave = 0;
 }
 
 void World::handleAsteroids()
@@ -101,10 +124,11 @@ void World::handleAsteroids()
   asteroidTimer += 0.1f;
   if (asteroidTimer >= asteroidTimerMax)
   {
-    int numAsteroids = rand() % 3 + 1;
+    int numAsteroids = genRandomNumberInRange(1, 3);
     for (int i = 0; i < numAsteroids; i++)
     {
-      float size = rand() % 20 + 30.0f;
+      float size = genRandomNumberInRange(30, 50);
+
       asteroids.push_back(Asteroid(player->getPos(), glm::vec2(size, size)));
     }
 
@@ -143,6 +167,7 @@ void World::handleAsteroids()
       if (checkCollision(*player, asteroid) && player->getIsAlive())
       {
         player->takeDamage(10);
+        score += 10;
         return true;
       }
 
@@ -151,7 +176,6 @@ void World::handleAsteroids()
 
     if (i != asteroids.end())
     {
-      score += 10;
       asteroids.erase(i);
     }
   }
@@ -159,14 +183,6 @@ void World::handleAsteroids()
 
 void World::handleEnemies()
 {
-    // spawn enemies
-  enemyTimer += 0.1f;
-  if (enemyTimer >= enemyTimerMax)
-  {
-    enemies.push_back(Enemy(generateRandomPositionOutsideWindow(*window), glm::vec2(40.0f, 40.0f), sf::Color::Red));
-    enemyTimer = 0.0f;
-  }
-
   for (auto &enemy : enemies)
   {
     enemy.fixedUpdate();
@@ -209,6 +225,41 @@ void World::handleEnemies()
     {
       score += 10;
       enemies.erase(i);
+    }
+  }
+}
+
+void World::handleWaves()
+{
+  if (enemiesToSpawn.empty() && enemies.empty())
+  {
+    waveTimer += 1.0f / 60.0f;
+    if (waveTimer >= timeBetweenWaves)
+    {
+      currentWave++;
+
+      int totalEnemies = genRandomNumberInRange(3, 5) * currentWave;
+
+      for (int i = 0; i < totalEnemies; i++)
+      {
+        enemiesToSpawn.push_back(Enemy(generateRandomPositionOutsideWindow(*window), glm::vec2(40.0f, 40.0f), sf::Color::Red));
+      }
+
+      waveTimer = 0.0f;
+    }
+  }
+
+  if (enemiesToSpawn.size() > 0 && enemies.empty())
+  {   
+    int totalEnemiesToSpawn = genRandomNumberInRange(1, 3) * currentWave / 2;
+
+    if (totalEnemiesToSpawn > enemiesToSpawn.size())
+      totalEnemiesToSpawn = enemiesToSpawn.size();
+
+    for (int i = 0; i < totalEnemiesToSpawn; i++)
+    {
+      enemies.push_back(enemiesToSpawn.back());
+      enemiesToSpawn.pop_back();
     }
   }
 }

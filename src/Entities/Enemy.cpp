@@ -6,8 +6,7 @@
 
 Enemy::Enemy(glm::vec2 pos, glm::vec2 size, sf::Color color) : Entity(5, 5, 2.0f, pos, size, color)
 {
-  srand(time(NULL));
-  this->type = static_cast<EnemyType>(rand() % 3);
+  this->type = static_cast<EnemyType>(genRandomNumberInRange(0, 3));
 }
 
 Enemy::~Enemy()

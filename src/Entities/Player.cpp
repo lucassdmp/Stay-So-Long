@@ -115,8 +115,8 @@ void Player::handleShots(sf::RenderWindow &window)
     {
         if (checkCollision(projectile, *World::boss))
         {
-        World::boss->takeDamage(10);
-        projectile.setPos(glm::vec2(-100.0f, -100.0f));
+            World::boss->takeDamage(10);
+            projectile.setPos(glm::vec2(-100.0f, -100.0f));
         }
     }
 
@@ -132,6 +132,8 @@ void Player::handleShots(sf::RenderWindow &window)
 
             asteroid.setPos(glm::vec2(-100.0f, -100.0f));
             projectile.setPos(glm::vec2(-100.0f, -100.0f));
+        
+            World::score += 10;
         }
     }
 

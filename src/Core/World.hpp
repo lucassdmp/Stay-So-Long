@@ -18,6 +18,12 @@ private:
   float enemyTimer;
   float enemyTimerMax;
 
+  int currentWave = 0;
+  float waveTimer;
+  float timeBetweenWaves;
+
+  std::vector<Enemy> enemiesToSpawn;
+
 public:
   World(float &dt, sf::RenderWindow &window);
   virtual ~World();
@@ -28,6 +34,7 @@ public:
   void restartGame();
   void handleAsteroids();
   void handleEnemies();
+  void handleWaves();
 
   static Player *player;
   static Boss *boss;

@@ -62,11 +62,8 @@ void Boss::update()
 
   if (projectiles.size() > 0)
   {
-    auto i = std::remove_if(projectiles.begin(), projectiles.end(), [](Projectile &projectile) {
-      if (isOutOfBounds(projectile, *Game::window))
-        return true;
-
-      return false;
+    auto i = std::remove_if(projectiles.begin(), projectiles.end(), [&](GameObject &p) {
+      return isOutOfBounds(p, *Game::window);
     });
 
     if (i != projectiles.end())
