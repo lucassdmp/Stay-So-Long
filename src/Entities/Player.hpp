@@ -28,6 +28,9 @@ public:
     void setLevel(int level) { this->current_level = level; }
     int getLevel() { return this->current_level; }
 
+    void setCurrentSpeed(float speed) { this->current_speed = speed; }
+    void setVelocity(glm::vec2 velocity) { this->velocity = velocity; }
+
 private:
     float angle = 0.0f;
     float shot_cooldown = 2.0f;

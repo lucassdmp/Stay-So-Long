@@ -15,8 +15,6 @@ private:
   sf::Sprite background;
   sf::Font *font;
 
-  bool isPaused;
-
 public:
   Game();
   ~Game();
@@ -26,6 +24,10 @@ public:
   void Render();
   void HandleInput();
 
+  static void Pause();
+  static void Resume();
+
+  static bool isPaused;
   static sf::RenderWindow *window;
   static World *world;
   static float dt;

@@ -69,10 +69,10 @@ void Game::Run()
       this->HandleInput();
     }
 
-    if (Input::get_key(sf::Keyboard::P))
+    if (Input::get_key(sf::Keyboard::Escape) && world->player->getIsAlive())
     {
       isPaused = !isPaused;
-      Input::set_key(sf::Keyboard::P, false);
+      Input::set_key(sf::Keyboard::Escape, false);
     }
 
     this->dt = this->clock.restart().asSeconds();
@@ -97,7 +97,61 @@ void Game::Render()
   if (!isPaused)
     this->world->Update();
   else
+  {
     this->world->Render();
+    
+    this->window->pushGLStates();
+
+    // opaque black background with SFML
+    sf::RectangleShape background(sf::Vector2f(window->getSize().x, window->getSize().y));
+    background.setFillColor(sf::Color(0, 0, 0, 128));
+    this->window->draw(background);    
+
+    sf::Text paused_text;
+    paused_text.setFont(*font);
+    paused_text.setCharacterSize(48);
+    paused_text.setFillColor(sf::Color::White);
+    if (!this->world->player->getIsAlive())
+      paused_text.setString("Game Over");
+    else
+      paused_text.setString("Paused");
+    paused_text.setPosition((window->getSize().x / 2) - (paused_text.getLocalBounds().width / 2), (window->getSize().y / 2) - (paused_text.getLocalBounds().height / 2));
+    this->window->draw(paused_text);
+
+    sf::Text resume_text;
+    resume_text.setFont(*font);
+    resume_text.setCharacterSize(24);
+    resume_text.setFillColor(sf::Color::White);
+    resume_text.setString("Press ESC to resume");
+    resume_text.setPosition((window->getSize().x / 2) - (resume_text.getLocalBounds().width / 2), (window->getSize().y / 2) - (resume_text.getLocalBounds().height / 2) + 48);
+    if (this->world->player->getIsAlive())
+      this->window->draw(resume_text);
+
+    sf::Text restart_text;
+    restart_text.setFont(*font);
+    restart_text.setCharacterSize(24);
+    restart_text.setFillColor(sf::Color::White);
+    restart_text.setString("Press R to restart");
+    restart_text.setPosition((window->getSize().x / 2) - (restart_text.getLocalBounds().width / 2), (window->getSize().y / 2) - (restart_text.getLocalBounds().height / 2) + 96);
+    this->window->draw(restart_text);
+
+    sf::Text quit_text;
+    quit_text.setFont(*font);
+    quit_text.setCharacterSize(24);
+    quit_text.setFillColor(sf::Color::White);
+    quit_text.setString("Press C to quit");
+    quit_text.setPosition((window->getSize().x / 2) - (quit_text.getLocalBounds().width / 2), (window->getSize().y / 2) - (quit_text.getLocalBounds().height / 2) + 144);
+    this->window->draw(quit_text);
+
+    if (Input::get_key(sf::Keyboard::R))
+    {
+      Resume();
+      this->world->restartGame();
+      Input::set_key(sf::Keyboard::R, false);
+    }
+
+    this->window->popGLStates();
+  }
 
   this->window->display();
 }
@@ -111,7 +165,7 @@ void Game::HandleInput()
   if (this->event.type == sf::Event::KeyPressed)
   {
     Input::set_key(this->event.key.code, true);
-    if (this->event.key.code == sf::Keyboard::Escape)
+    if (this->event.key.code == sf::Keyboard::C)
       this->window->close();
   }
   if (this->event.type == sf::Event::KeyReleased)
@@ -128,6 +182,17 @@ void Game::HandleInput()
     Input::set_mouse_pos(glm::vec2(this->event.mouseMove.x, this->event.mouseMove.y));
 }
 
+void Game::Pause()
+{
+  isPaused = true;
+}
+
+void Game::Resume()
+{
+  isPaused = false;
+}
+
+bool Game::isPaused = false;
 sf::RenderWindow *Game::window = nullptr;
 World *Game::world = nullptr;
 float Game::dt = 0.0f;

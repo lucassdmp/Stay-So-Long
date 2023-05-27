@@ -1,6 +1,7 @@
 #include "World.hpp"
 #include "../Util/functions.hpp"
 #include "Game.hpp"
+#include "../Util/Input.hpp"
 
 World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
 {
@@ -24,6 +25,12 @@ World::~World()
 
 void World::Update()
 {
+  if (!player->getIsAlive())
+  {
+    Game::Pause();
+    return;
+  }
+
   Game::texts["score"].setString("Score: " + std::to_string(score));
   
   handleAsteroids();
@@ -43,6 +50,27 @@ void World::Render()
     projectile.draw();
 
   player->draw(*dt, *window);
+}
+
+void World::restartGame()
+{
+  delete player;
+  asteroids.clear();
+  enemies.clear();
+
+  glm::vec2 initialPlayerPos = glm::vec2(window->getSize().x / 2, window->getSize().y / 2);
+  glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
+  player = new Player(100, 100, 10.0f, initialPlayerPos, playerSize, sf::Color::White);
+  player->setVelocity(glm::vec2(0.0f, 0.0f));
+  player->setCurrentSpeed(0.0f);
+
+  asteroidTimerMax = 30.0f;
+  asteroidTimer = 0.0f;
+
+  enemyTimerMax = 20.0f;
+  enemyTimer = 0.0f;
+
+  score = 0;
 }
 
 void World::handleAsteroids()

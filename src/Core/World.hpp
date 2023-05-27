@@ -24,6 +24,7 @@ public:
   void Update();
   void Render();
 
+  void restartGame();
   void handleAsteroids();
   void handleEnemies();
 
