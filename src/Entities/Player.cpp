@@ -111,6 +111,15 @@ void Player::handleShots(sf::RenderWindow &window)
   {
     projectile.update();
 
+    if (World::boss != nullptr)
+    {
+        if (checkCollision(projectile, *World::boss))
+        {
+        World::boss->takeDamage(10);
+        projectile.setPos(glm::vec2(-100.0f, -100.0f));
+        }
+    }
+
     for (auto &asteroid : World::asteroids)
     {
         if (checkCollision(projectile, asteroid))

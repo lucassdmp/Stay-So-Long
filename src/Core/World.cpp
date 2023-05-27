@@ -10,6 +10,7 @@ World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
   glm::vec2 initialPlayerPos = glm::vec2(window.getSize().x / 2, window.getSize().y / 2);
   glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
   player = new Player(100, 100, 10.0f, initialPlayerPos, playerSize, sf::Color::White);
+  boss = new Boss(glm::vec2(window.getSize().x / 2, -500.0f), glm::vec2(150.0f, 150.0f), sf::Color::Red);
 
   asteroidTimerMax = 30.0f;
   asteroidTimer = 0.0f;
@@ -21,12 +22,23 @@ World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
 World::~World()
 {
   delete player;
+  delete boss;
   asteroids.clear();
   enemies.clear();
 }
 
 void World::Update()
-{
+{  
+  if (boss != nullptr)
+  {
+    boss->update();
+  }
+  else
+  {
+    handleAsteroids();
+    handleEnemies();
+  }
+
   if (!player->getIsAlive())
   {
     Game::Pause();
@@ -34,14 +46,20 @@ void World::Update()
   }
 
   Game::texts["score"].setString("Score: " + std::to_string(score));
-  
-  handleAsteroids();
-  handleEnemies();
+
   player->fixedUpdate(*dt, *window);
 }
 
 void World::Render()
 {
+  if (boss != nullptr)
+  {
+    boss->draw();
+
+    for (auto &projectile : boss->getProjectiles())
+      projectile.draw();
+  }
+
   for (auto &asteroid : asteroids)
     asteroid.draw();
 
@@ -57,11 +75,13 @@ void World::Render()
 void World::restartGame()
 {
   delete player;
+  delete boss;
   asteroids.clear();
   enemies.clear();
 
   glm::vec2 initialPlayerPos = glm::vec2(window->getSize().x / 2, window->getSize().y / 2);
   glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
+  boss = new Boss(glm::vec2(window->getSize().x / 2, -500.0f), glm::vec2(150.0f, 150.0f), sf::Color::Red);
   player = new Player(100, 100, 10.0f, initialPlayerPos, playerSize, sf::Color::White);
   player->setVelocity(glm::vec2(0.0f, 0.0f));
   player->setCurrentSpeed(0.0f);
@@ -193,7 +213,8 @@ void World::handleEnemies()
   }
 }
 
-Player *World::player;
+Player *World::player = nullptr;
+Boss *World::boss = nullptr;
 std::vector<Asteroid> World::asteroids;
 std::vector<Enemy> World::enemies;
 int World::score = 0;

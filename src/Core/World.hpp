@@ -4,6 +4,7 @@
 #include "../Entities/Player.hpp"
 #include "../Entities/Asteroid.hpp"
 #include "../Entities/Enemy.hpp"
+#include "../Entities/Boss.hpp"
 #include <iostream>
 #include <vector>
 
@@ -29,6 +30,7 @@ public:
   void handleEnemies();
 
   static Player *player;
+  static Boss *boss;
   static std::vector<Asteroid> asteroids;
   static std::vector<Enemy> enemies;
   static int score;

@@ -21,6 +21,7 @@ set(SOURCES
   src/Entities/Projectile.cpp
   src/Entities/Asteroid.cpp
   src/Entities/Enemy.cpp
+  src/Entities/Boss.cpp
 )
 
 # Add the executable

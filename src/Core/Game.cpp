@@ -139,7 +139,7 @@ void Game::Render()
     quit_text.setFont(*font);
     quit_text.setCharacterSize(24);
     quit_text.setFillColor(sf::Color::White);
-    quit_text.setString("Press C to quit");
+    quit_text.setString("Press Q to quit");
     quit_text.setPosition((window->getSize().x / 2) - (quit_text.getLocalBounds().width / 2), (window->getSize().y / 2) - (quit_text.getLocalBounds().height / 2) + 144);
     this->window->draw(quit_text);
 
@@ -165,7 +165,7 @@ void Game::HandleInput()
   if (this->event.type == sf::Event::KeyPressed)
   {
     Input::set_key(this->event.key.code, true);
-    if (this->event.key.code == sf::Keyboard::C)
+    if (this->event.key.code == sf::Keyboard::Q)
       this->window->close();
   }
   if (this->event.type == sf::Event::KeyReleased)
