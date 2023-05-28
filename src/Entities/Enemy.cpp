@@ -7,6 +7,9 @@
 Enemy::Enemy(glm::vec2 pos, glm::vec2 size, sf::Color color) : Entity(5, 5, 2.0f, pos, size, color)
 {
   this->type = static_cast<EnemyType>(genRandomNumberInRange(0, 3));
+
+  setMaxHealth(10 * World::player->getLevel());
+  setCurrentHealth(getMaxHealth());
 }
 
 Enemy::~Enemy()

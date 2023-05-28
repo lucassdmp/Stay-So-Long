@@ -21,8 +21,5 @@ void Entity::update()
 {
     if (this->current_health <= 0)
         this->isAlive = false;
-
-    if (this->current_health < this->max_health)
-        this->color.b = (float)(this->max_health - this->current_health);
 }
 

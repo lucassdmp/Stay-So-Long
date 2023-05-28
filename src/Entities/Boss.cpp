@@ -6,10 +6,12 @@
 
 #define HEALTH_BAR_HEIGHT 10
 
-Boss::Boss(glm::vec2 pos, glm::vec2 size, sf::Color color) : Entity(300, 300, 2.0f, pos, size, color)
+Boss::Boss(glm::vec2 pos, glm::vec2 size, sf::Color color) : Entity(1000, 1000, 10.0f, pos, size, color)
 {
   shootTimerMax = 0.5f;
   shootTimer = shootTimerMax;
+
+  rotationSpeed = 0.5f;
 }
 
 Boss::~Boss()
@@ -17,7 +19,7 @@ Boss::~Boss()
   projectiles.clear();
 }
 
-void Boss::update()
+void Boss::fixedUpdate()
 {
   if (checkCollision(*this, *World::player))
   {
@@ -37,9 +39,9 @@ void Boss::update()
   // shoot and rotate if in center
   else 
   {
-    rotation += 0.5f;
-    if (rotation > 360.0f)
-      rotation = 0.0f;
+    rotationAngle += rotationSpeed;
+    if (rotationAngle > 360.0f)
+      rotationAngle = 0.0f;
 
     shootTimer -= 0.1f;
     if (shootTimer <= 0.0f)
@@ -72,12 +74,13 @@ void Boss::update()
     }
   }
 
+  update();
   draw();
 }
 
 void Boss::shoot()
 {
-  glm::mat4 rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+  glm::mat4 rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(rotationAngle), glm::vec3(0.0f, 0.0f, 1.0f));
 
   glm::vec4 projPos1 = glm::vec4(size.x, 0.0f, 0.0f, 1.0f);
   projPos1 = rotationMat * projPos1;
@@ -108,10 +111,10 @@ void Boss::shoot()
   Projectile projectile3 = Projectile(direction3, 3.0f, finalProjPos3, glm::vec2(10.0f, 10.0f), sf::Color::White);
   Projectile projectile4 = Projectile(direction4, 3.0f, finalProjPos4, glm::vec2(10.0f, 10.0f), sf::Color::White);
 
-  projectiles.push_back(projectile1);
-  projectiles.push_back(projectile2);
-  projectiles.push_back(projectile3);
-  projectiles.push_back(projectile4);
+  projectiles.push_back(projectile1); // right gun projectile
+  //projectiles.push_back(projectile2); // left gun projectile
+  projectiles.push_back(projectile3); // top gun projectile
+  //projectiles.push_back(projectile4); // bottom gun projectile
 }
 
 void Boss::draw()
@@ -120,7 +123,7 @@ void Boss::draw()
 
   glPushMatrix();
   glTranslatef(pos.x, pos.y, 0.0f);
-  glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+  glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f);
   glScalef(size.x, size.y, 1.0f);
 
   glColor3f(color.r, color.g, color.b);
@@ -132,7 +135,7 @@ void Boss::draw()
   glPushMatrix();
   glColor3f(1.0f, 1.0f, 1.0f);
   glTranslatef(pos.x, pos.y, 0.0f);
-  glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+  glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f);
   glTranslatef(size.x, 0.0f, 0.0f);
   glScalef(20.0f, 10.0f, 1.0f);
 
@@ -143,7 +146,7 @@ void Boss::draw()
   glPushMatrix();
   glColor3f(1.0f, 1.0f, 1.0f);
   glTranslatef(pos.x, pos.y, 0.0f);
-  glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+  glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f);
   glTranslatef(-size.x, 0.0f, 0.0f);
   glScalef(20.0f, 10.0f, 1.0f);
 
@@ -154,7 +157,7 @@ void Boss::draw()
   glPushMatrix();
   glColor3f(1.0f, 1.0f, 1.0f);
   glTranslatef(pos.x, pos.y, 0.0f);
-  glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+  glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f);
   glTranslatef(0.0f, size.y, 0.0f);
   glScalef(10.0f, 20.0f, 1.0f);
 
@@ -165,7 +168,7 @@ void Boss::draw()
   glPushMatrix();
   glColor3f(1.0f, 1.0f, 1.0f);
   glTranslatef(pos.x, pos.y, 0.0f);
-  glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+  glRotatef(rotationAngle, 0.0f, 0.0f, 1.0f);
   glTranslatef(0.0f, -size.y, 0.0f);
   glScalef(10.0f, 20.0f, 1.0f);
 
@@ -176,19 +179,22 @@ void Boss::draw()
 
 void Boss::drawHealthBar()
 {
-    glColor3f(0.77f, 0.31f, 0.31f);
-    glPushMatrix();
-    glTranslatef(Game::window->getSize().x / 2, HEALTH_BAR_HEIGHT + 10.0f, 0.0f);
-    glScalef(this->getMaxHealth(), HEALTH_BAR_HEIGHT, 1.0f);
-    Shapes::Square();
-    glPopMatrix();
+  float maxHealthLimitedToWindow = this->getMaxHealth() * 0.5f;
+  float currentHealthLimitedToWindow = this->getCurrentHealth() * 0.5f;
 
-    glColor3f(1.0f, 0.42f, 0.42f);
-    glPushMatrix();
-    glTranslatef(Game::window->getSize().x / 2, HEALTH_BAR_HEIGHT + 10.0f, 0.0f);
-    glScalef(this->getCurrentHealth(), HEALTH_BAR_HEIGHT, 1.0f);
+  glColor3f(0.77f, 0.31f, 0.31f);
+  glPushMatrix();
+  glTranslatef(Game::window->getSize().x / 2, HEALTH_BAR_HEIGHT + 10.0f, 0.0f);
+  glScalef(maxHealthLimitedToWindow, HEALTH_BAR_HEIGHT, 1.0f);
+  Shapes::Square();
+  glPopMatrix();
 
-    Shapes::Square();
+  glColor3f(1.0f, 0.42f, 0.42f);
+  glPushMatrix();
+  glTranslatef(Game::window->getSize().x / 2, HEALTH_BAR_HEIGHT + 10.0f, 0.0f);
+  glScalef(currentHealthLimitedToWindow, HEALTH_BAR_HEIGHT, 1.0f);
 
-    glPopMatrix();
+  Shapes::Square();
+
+  glPopMatrix();
 }

@@ -16,7 +16,7 @@ World::World(float &dt, sf::RenderWindow &window) : dt(&dt), window(&window)
   enemyTimerMax = 20.0f;
   enemyTimer = 0.0f;
 
-  timeBetweenWaves = 10.0f;
+  timeBetweenWaves = 3.0f;
   waveTimer = 0.0f;
 }
 
@@ -31,9 +31,29 @@ World::~World()
 
 void World::Update()
 {  
+  if (currentWave == bossWaveStep)
+  {
+    if (boss == nullptr)
+    {
+      asteroids.clear();
+      enemies.clear();
+      enemiesToSpawn.clear();
+      boss = new Boss(glm::vec2(window->getSize().x / 2, -500.0f), glm::vec2(150.0f, 150.0f), sf::Color::Red);
+    }
+  }
+
   if (boss != nullptr)
   {
-    boss->update();
+    boss->fixedUpdate();
+
+    if (!boss->getIsAlive())
+    {
+      delete boss;
+      boss = nullptr;
+      currentWave++;
+      waveTimer = 0.0f;
+      bossWaveStep += 5;
+    }
   }
   else
   {
@@ -96,8 +116,10 @@ void World::restartGame()
 {
   delete player;
   delete boss;
+  boss = nullptr;
   asteroids.clear();
   enemies.clear();
+  enemiesToSpawn.clear();
 
   glm::vec2 initialPlayerPos = glm::vec2(window->getSize().x / 2, window->getSize().y / 2);
   glm::vec2 playerSize = glm::vec2(20.0f, 20.0f);
@@ -105,13 +127,8 @@ void World::restartGame()
   player->setVelocity(glm::vec2(0.0f, 0.0f));
   player->setCurrentSpeed(0.0f);
 
-  asteroidTimerMax = 30.0f;
   asteroidTimer = 0.0f;
-
-  enemyTimerMax = 20.0f;
   enemyTimer = 0.0f;
-
-  timeBetweenWaves = 10.0f;
   waveTimer = 0.0f;
 
   score = 0;

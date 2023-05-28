@@ -24,6 +24,8 @@ private:
 
   std::vector<Enemy> enemiesToSpawn;
 
+  int bossWaveStep = 5;
+
 public:
   World(float &dt, sf::RenderWindow &window);
   virtual ~World();

@@ -33,7 +33,8 @@ public:
 
 private:
     float angle = 0.0f;
-    float shot_cooldown = 2.0f;
+    float min_shot_cooldown = 2.0f;
+    float shot_cooldown = 5.0f;
     float shot_timer = 0.0f;
     glm::vec2 lookDir;
     std::vector<Projectile> projectiles;
@@ -45,6 +46,6 @@ private:
     glm::vec2 velocity;
 
     int current_level = 1;
-    int max_level = 3;
-    int level_up_score_step = 50;
+    int max_level = 10;
+    int next_level_up_score = 50;
 };

@@ -33,13 +33,16 @@ void Player::fixedUpdate(float dt, sf::RenderWindow &window)
 
 void Player::handleUpgrades()
 {
-    if (World::score >= this->level_up_score_step * this->current_level && this->current_level < this->max_level)
+    if (World::score >= this->next_level_up_score && this->current_level < this->max_level)
     {
+        next_level_up_score += 50 * this->current_level;
         this->current_level++;
         shot_cooldown = shot_cooldown / (this->current_level * 0.5f);
+        shot_cooldown = std::max(shot_cooldown, min_shot_cooldown);
+        this->setMaxHealth(this->getMaxHealth() + 50);
+        this->setCurrentHealth(this->getMaxHealth());
     }
     Game::texts["level"].setString("Level: " + std::to_string(this->current_level));
-
 }
 
 void Player::move(float dt)
@@ -102,8 +105,11 @@ void Player::move(float dt)
 void Player::handleShots(sf::RenderWindow &window)
 {
   this->shot_timer += 0.1f;
-  if (Input::get_mouse_button(sf::Mouse::Left))
+  if (Input::get_mouse_button(sf::Mouse::Left) && this->shot_timer >= this->shot_cooldown)
+  {
     this->shoot();
+    this->shot_timer = 0.0f;
+  }
 
   std::vector<Asteroid> new_asteroids;
 
@@ -165,41 +171,53 @@ void Player::handleShots(sf::RenderWindow &window)
 
 void Player::shoot()
 {
-  if (this->shot_timer < this->shot_cooldown)
-    return;
-
-  this->shot_timer = 0.0f;
-
   glm::vec2 direction = glm::vec2(Input::mouse_pos.x - this->pos.x, Input::mouse_pos.y - this->pos.y);
   direction = glm::normalize(direction);
 
   std::vector<Projectile> new_projectiles;
 
-  switch (current_level)
+  if (current_level >= 1 && current_level < 4)
   {
-    case 1:
-        new_projectiles.push_back(Projectile(direction, 10.0f, this->pos, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
-        break;
-    default:
-        float offsetX = 15.0f;
-        float offsetY = 10.0f;
-        glm::mat4 rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+    new_projectiles.push_back(Projectile(direction, 10.0f, this->pos, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
+  }
+  else if (current_level >= 4 && current_level < 7)
+  {
+    float offsetX = 15.0f;
+    float offsetY = 10.0f;
+    glm::mat4 rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        glm::vec4 projPos1 = glm::vec4(offsetX, offsetY, 0.0f, 1.0f);
-        glm::vec4 projPos2 = glm::vec4(-offsetX, offsetY, 0.0f, 1.0f);
-        projPos1 = rotationMat * projPos1;
-        projPos2 = rotationMat * projPos2;
+    glm::vec4 projPos1 = glm::vec4(offsetX, offsetY, 0.0f, 1.0f);
+    glm::vec4 projPos2 = glm::vec4(-offsetX, offsetY, 0.0f, 1.0f);
+    projPos1 = rotationMat * projPos1;
+    projPos2 = rotationMat * projPos2;
 
-        glm::vec2 finalPosition1 = pos + glm::vec2(projPos1);
-        glm::vec2 finalPosition2 = pos + glm::vec2(projPos2);
+    glm::vec2 finalPosition1 = pos + glm::vec2(projPos1);
+    glm::vec2 finalPosition2 = pos + glm::vec2(projPos2);
 
-        new_projectiles.push_back(Projectile(direction, 10.0f, finalPosition1, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
-        new_projectiles.push_back(Projectile(direction, 10.0f, finalPosition2, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
-        break;
+    new_projectiles.push_back(Projectile(direction, 10.0f, finalPosition1, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
+    new_projectiles.push_back(Projectile(direction, 10.0f, finalPosition2, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
+  }
+  else
+  {
+    float offsetX = 15.0f;
+    float offsetY = 10.0f;
+    glm::mat4 rotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    glm::vec4 projPos1 = glm::vec4(offsetX, offsetY, 0.0f, 1.0f);
+    glm::vec4 projPos2 = glm::vec4(-offsetX, offsetY, 0.0f, 1.0f);
+    projPos1 = rotationMat * projPos1;
+    projPos2 = rotationMat * projPos2;
+
+    glm::vec2 finalPosition1 = pos + glm::vec2(projPos1);
+    glm::vec2 finalPosition2 = pos + glm::vec2(projPos2);
+
+    new_projectiles.push_back(Projectile(direction, 10.0f, finalPosition1, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
+    new_projectiles.push_back(Projectile(direction, 10.0f, finalPosition2, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
+    new_projectiles.push_back(Projectile(direction, 10.0f, this->pos, glm::vec2(10.0f, 10.0f), sf::Color::Yellow));
   }
 
   projectiles.insert(projectiles.end(), new_projectiles.begin(), new_projectiles.end());
-}
+} 
 
 void Player::checkBounds(sf::RenderWindow &window)
 {
